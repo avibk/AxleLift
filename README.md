@@ -1,55 +1,171 @@
 # Science-Based Lifting OS
 
-A science-based gym platform designed to help lifters train smarter, progress consistently, and understand the principles behind effective hypertrophy and strength training.
+**The operating system for evidence-based lifting.**
+
+Track workouts, learn the science, compete through meaningful progression, and receive personalized coaching powered by data—not gym myths.
+
+</div>
+
+---
 
 ## Vision
 
-Most fitness apps focus on tracking workouts.
+Most fitness apps focus on recording workouts.
 
-Science-Based Lifting OS focuses on helping users understand *why* they are training a certain way through evidence-based education, intelligent progression, and personalized coaching.
+Science-Based Lifting OS is designed to help users understand **why** they are training a certain way through evidence-based education, intelligent progression systems, and personalized coaching.
 
-The goal is to make niche science-based lifting principles accessible to everyday gym-goers.
+Our mission is to make science-based lifting accessible to everyone—from complete beginners to advanced lifters.
 
-## Core Features
+### Core Principles
+
+* Evidence over bro-science
+* Progress over perfection
+* High effort, intelligent training
+* Simplicity over complexity
+* Education over blind tracking
+* Long-term progression
+
+---
+
+## Features
 
 ### Intelligent Workout Logging
 
-* Exercise tracking
-* Weight, reps, sets, and RIR logging
-* Workout history and analytics
+Track:
+
+* Exercises
+* Sets
+* Reps
+* Weight
+* RIR (Reps In Reserve)
+
+Built for lifters who care about meaningful progression.
+
+---
 
 ### Progression Engine
 
-* Automatic progression recommendations
-* Rep and load progression tracking
-* Deload recommendations
+Automatically recommends:
+
+* Increasing weight
+* Increasing reps
+* Maintaining load
+* Deloading when appropriate
+
+No more guessing what to do next session.
+
+---
 
 ### Muscle Growth Dashboard
 
-* Muscle-specific volume tracking
-* Effective set calculations
-* Weekly volume targets
+Track training volume by muscle group.
+
+Examples:
+
+* Chest
+* Back
+* Quads
+* Side Delts
+
+Users learn to think like coaches rather than simply counting exercises.
+
+---
 
 ### Science Feed
 
-* Evidence-based fitness education
-* Training myths and practical takeaways
-* Short-form educational content
+Short-form educational content covering:
 
-### ELO System
+* Hypertrophy
+* Recovery
+* Volume
+* Intensity
+* Exercise selection
+* Biomechanics
+* Common fitness myths
+
+Designed to make evidence-based lifting easier to understand.
+
+---
+
+### ELO & Leaderboards
+
+Compete through:
 
 * Lifetime ELO
 * Seasonal ELO
-* Progress, consistency, and strength-based rankings
-* Leaderboards and achievement badges
+* Strength Rankings
+* Relative Strength Rankings
+* Progress Rankings
+* Consistency Rankings
+
+The goal is to reward smart training—not just genetics.
+
+---
 
 ### AI Coach
 
-* Personalized workout analysis
-* Progress reviews
-* Science-based training recommendations
+Receive personalized insights based on:
 
-## Technology Stack
+* Volume
+* Progression
+* Consistency
+* Training history
+* Performance trends
+
+The AI explains your data and helps you make better training decisions.
+
+---
+
+## Architecture
+
+The platform follows a simple principle:
+
+> Calculate with code. Explain with AI.
+
+```
+Workout Data
+↓
+Rules Engine
+↓
+Metrics & Analytics
+↓
+AI Coach
+↓
+Personalized Insights
+```
+
+### Rules Engine
+
+Handles:
+
+* Volume calculations
+* Effective set calculations
+* Progression recommendations
+* Science score calculations
+* ELO updates
+* Leaderboard rankings
+
+### AI
+
+Handles:
+
+* Coaching explanations
+* Educational content
+* User questions
+* Personalized feedback
+
+AI is not responsible for training calculations.
+
+This keeps the platform:
+
+* Cheaper
+* Faster
+* More reliable
+* Easier to maintain
+
+---
+
+## Tech Stack
 
 ### Frontend
 
@@ -65,41 +181,9 @@ The goal is to make niche science-based lifting principles accessible to everyda
 
 ### AI
 
-* GPT-5 mini
+* GPT-5 Mini
 
-## Architecture
-
-The platform is designed around a simple principle:
-
-> Calculate with code. Explain with AI.
-
-```text
-Workout Data
-      ↓
-Rules Engine
-      ↓
-Metrics & Analytics
-      ↓
-GPT-5 mini
-      ↓
-User-Friendly Coaching
-```
-
-### Rules Engine Responsibilities
-
-* Volume calculations
-* Effective set calculations
-* Progression recommendations
-* Science score calculations
-* ELO updates
-* Leaderboard rankings
-
-### AI Responsibilities
-
-* Coaching explanations
-* Personalized feedback
-* Educational responses
-* User questions
+---
 
 ## MVP Scope
 
@@ -112,25 +196,71 @@ User-Friendly Coaching
 * Science Feed
 * Basic ELO System
 * Leaderboards
-* AI Workout Review
+* AI Workout Reviews
 
-### Future Features
+### Planned
 
-* Lift verification
-* Exercise communities
-* Creator marketplace
-* Advanced social features
-* Wearable integrations
+* Lift Verification
+* Exercise Communities
+* Creator Marketplace
+* Advanced Social Features
+* Wearable Integrations
 
-## Guiding Principles
+---
 
-* Evidence over bro-science
-* Simplicity over complexity
-* Progress over perfection
-* Education over blind tracking
-* Avoid over-engineering
-* Use AI only where it adds value
+## Development Philosophy
 
-## Mission Statement
+This project intentionally avoids over-engineering.
 
-To build the operating system for science-based lifting and help lifters train with the same principles used by elite coaches, researchers, and evidence-based athletes.
+Many fitness startups attempt to solve every problem with AI, complex infrastructure, or microservices before they have users.
+
+Science-Based Lifting OS focuses on:
+
+* Strong fundamentals
+* Simple architecture
+* Data-driven decisions
+* AI only where it adds value
+
+Build what matters first.
+
+Optimize later.
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+* Node.js
+
+### Installation
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Create a local environment file:
+
+```
+.env.local
+```
+
+Add your API key:
+
+```
+GEMINI_API_KEY=your_api_key_here
+```
+
+Run the development server:
+
+```bash
+npm run dev
+```
+
+---
+
+## Long-Term Goal
+
+Build the operating system for science-based lifting and help everyday lifters train using the same principles employed by elite coaches, researchers, and evidence-based athletes.
