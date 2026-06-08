@@ -1,0 +1,444 @@
+import React, { useState } from "react";
+import { WorkoutSession, WorkoutExercise, TrainingSet, Exercise } from "../types";
+import { EXERCISE_DATABASE } from "../data";
+import { calculateStimulusScore, calculateEffectiveReps, calculateEstimated1RM, getProgressionRecommendation } from "../utils";
+import { Plus, Trash2, Save, Calendar, Clock, Dumbbell, Sparkles, CheckCircle2, History, RotateCcw } from "lucide-react";
+
+interface WorkoutLoggerProps {
+  sessions: WorkoutSession[];
+  onSaveSession: (session: WorkoutSession) => void;
+}
+
+export default function WorkoutLogger({ sessions, onSaveSession }: WorkoutLoggerProps) {
+  // Session form state
+  const [sessionName, setSessionName] = useState<string>("Evidence-Based Session");
+  const [sessionNotes, setSessionNotes] = useState<string>("");
+  const [duration, setDuration] = useState<number>(45);
+  const [logs, setLogs] = useState<WorkoutExercise[]>([
+    {
+      id: "we-active-1",
+      exerciseId: "ex-bench-press",
+      sets: [
+        { id: "set-active-1-1", weight: 80, reps: 10, rir: 2, restTime: 120 }
+      ]
+    }
+  ]);
+
+  // Handle active exercise selection change
+  const handleExerciseChange = (workExId: string, value: string) => {
+    setLogs(logs.map(log => log.id === workExId ? { ...log, exerciseId: value } : log));
+  };
+
+  // Add a new exercise to logged workout
+  const addNewExercise = () => {
+    const nextId = `we-active-${logs.length + 1}`;
+    setLogs([
+      ...logs,
+      {
+        id: nextId,
+        exerciseId: EXERCISE_DATABASE[0].id,
+        sets: [{ id: `set-active-${nextId}-1`, weight: 60, reps: 10, rir: 2, restTime: 90 }]
+      }
+    ]);
+  };
+
+  // Remove exercise from logged workout
+  const removeExercise = (workExId: string) => {
+    setLogs(logs.filter(log => log.id !== workExId));
+  };
+
+  // Add set to a specific active exercise
+  const addSetToExercise = (workExId: string) => {
+    setLogs(logs.map(log => {
+      if (log.id === workExId) {
+        const lastSet = log.sets[log.sets.length - 1];
+        const nextSetId = `set-active-${workExId}-${log.sets.length + 1}`;
+        return {
+          ...log,
+          sets: [
+            ...log.sets,
+            {
+              id: nextSetId,
+              weight: lastSet ? lastSet.weight : 50,
+              reps: lastSet ? lastSet.reps : 10,
+              rir: lastSet ? lastSet.rir : 2,
+              restTime: lastSet ? lastSet.restTime : 90
+            }
+          ]
+        };
+      }
+      return log;
+    }));
+  };
+
+  // Remove set from specific active exercise
+  const removeSetFromExercise = (workExId: string, setId: string) => {
+    setLogs(logs.map(log => {
+      if (log.id === workExId) {
+        return {
+          ...log,
+          sets: log.sets.filter(s => s.id !== setId)
+        };
+      }
+      return log;
+    }));
+  };
+
+  // Update a specific set parameter
+  const updateSetField = (workExId: string, setId: string, field: keyof TrainingSet, value: number) => {
+    setLogs(logs.map(log => {
+      if (log.id === workExId) {
+        return {
+          ...log,
+          sets: log.sets.map(s => s.id === setId ? { ...s, [field]: value } : s)
+        };
+      }
+      return log;
+    }));
+  };
+
+  // Reset logger interface
+  const resetLogger = () => {
+    setSessionName("Evidence-Based Session");
+    setSessionNotes("");
+    setDuration(45);
+    setLogs([
+      {
+        id: "we-active-1",
+        exerciseId: "ex-bench-press",
+        sets: [{ id: "set-active-1-1", weight: 80, reps: 10, rir: 2, restTime: 120 }]
+      }
+    ]);
+  };
+
+  // Trigger save
+  const handleSave = () => {
+    if (logs.length === 0 || logs.every(log => log.sets.length === 0)) {
+      alert("Please log at least one completed set!");
+      return;
+    }
+
+    // Process set stimulus fields and estimated 1RM before saving
+    const finalExercises = logs.map(log => ({
+      ...log,
+      sets: log.sets.map(set => ({
+        ...set,
+        stimulusScore: calculateStimulusScore(set.rir, set.reps),
+        effectiveReps: calculateEffectiveReps(set.rir, set.reps),
+        estimated1RM: calculateEstimated1RM(set.weight, set.reps)
+      }))
+    }));
+
+    const newSession: WorkoutSession = {
+      id: `session-log-${Date.now()}`,
+      name: sessionName || "Evidence-Based Workout",
+      timestamp: Date.now(),
+      durationMinutes: duration,
+      notes: sessionNotes,
+      exercises: finalExercises
+    };
+
+    onSaveSession(newSession);
+    resetLogger();
+    alert("Workout successfully archived! Weekly muscle volume updated.");
+  };
+
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 animate-fade-in">
+      {/* Active Workout Logger Column (Takes 2/3) */}
+      <div className="lg:col-span-2 space-y-6">
+        <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+            <div>
+              <h2 className="text-xl font-bold text-white tracking-tight flex items-center gap-2">
+                <Dumbbell className="w-5 h-5 text-cyan-400" />
+                Live Science Gym Session
+              </h2>
+              <p className="text-xs text-neutral-400">
+                Log weight and reps. Adjust Reps In Reserve (RIR) to calculate dynamic tension metrics.
+              </p>
+            </div>
+            <div className="flex gap-2">
+              <button 
+                onClick={resetLogger}
+                className="px-3.5 py-1.5 border border-neutral-800 hover:bg-neutral-800 text-neutral-300 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                Reset
+              </button>
+              <button 
+                onClick={handleSave}
+                className="px-4 py-1.5 bg-cyan-600 hover:bg-cyan-500 text-neutral-900 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all shadow-md"
+              >
+                <Save className="w-3.5 h-3.5" />
+                Submit Session
+              </button>
+            </div>
+          </div>
+
+          {/* Metadata Section */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6 pb-6 border-b border-neutral-800">
+            <div>
+              <label className="block text-[10px] font-mono text-neutral-500 uppercase mb-1">Session Protocol Name</label>
+              <input 
+                value={sessionName}
+                onChange={(e) => setSessionName(e.target.value)}
+                type="text"
+                placeholder="e.g. Upper Chest Specialization"
+                className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-500/70"
+              />
+            </div>
+            <div>
+              <label className="block text-[10px] font-mono text-neutral-500 uppercase mb-1">Duration minutes</label>
+              <input 
+                value={duration}
+                onChange={(e) => setDuration(parseInt(e.target.value) || 0)}
+                type="number"
+                className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-500/70"
+              />
+            </div>
+            <div>
+              <label className="block text-[10px] font-mono text-neutral-500 uppercase mb-1">Target Intensity Focus</label>
+              <select className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3 py-2 text-sm text-neutral-300 focus:outline-none focus:border-cyan-500/70">
+                <option>Myofibrillar Hypertrophy (6-12 Reps)</option>
+                <option>Absolute Strength (3-5 Reps)</option>
+                <option>Sarcoplasmic / Metabolic Max (15+ Reps)</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Active Exercises List */}
+          <div className="space-y-6">
+            {logs.map((log, logIdx) => {
+              const activeExerciseId = log.exerciseId;
+              const exerciseDef = EXERCISE_DATABASE.find(e => e.id === activeExerciseId);
+              // Get active progression recommendation for this exercise
+              const progressionRec = getProgressionRecommendation(activeExerciseId, sessions);
+
+              return (
+                <div key={log.id} className="bg-neutral-950/70 border border-neutral-800 rounded-xl p-4 space-y-4">
+                  <div className="flex justify-between items-center gap-4">
+                    <div className="flex-1 max-w-sm">
+                      <select 
+                        value={log.exerciseId}
+                        onChange={(e) => handleExerciseChange(log.id, e.target.value)}
+                        className="w-full bg-neutral-900 border border-neutral-800 rounded-lg px-3 py-1.5 text-xs text-white font-semibold focus:outline-none focus:border-cyan-500"
+                      >
+                        {EXERCISE_DATABASE.map(ex => (
+                          <option key={ex.id} value={ex.id}>{ex.name}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <button 
+                      onClick={() => removeExercise(log.id)}
+                      className="p-1.5 hover:bg-rose-500/10 text-neutral-500 hover:text-rose-400 rounded-md transition-all"
+                      title="Remove exercise"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+
+                  {/* Active Progression Overlay Hint */}
+                  {progressionRec && progressionRec.originalWeight > 0 && (
+                    <div className="p-2.5 bg-cyan-950/20 border border-cyan-500/20 rounded-lg text-xs flex gap-2 items-start">
+                      <Sparkles className="w-4 h-4 text-cyan-400 flex-shrink-0 mt-0.5" />
+                      <div>
+                        <p className="text-[11px] text-neutral-300">
+                          <span className="font-bold text-cyan-400">Overload Target: </span>
+                          Aim for <span className="font-bold">{progressionRec.targetWeight}kg × {progressionRec.targetRepsRange}</span> based on your previous session performance of {progressionRec.originalWeight}kg × {progressionRec.originalReps}.
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Table headers */}
+                  <div className="grid grid-cols-12 gap-2 text-center text-[10px] font-mono text-neutral-500 uppercase">
+                    <div className="col-span-1">Set</div>
+                    <div className="col-span-2">Weight (kg)</div>
+                    <div className="col-span-2">Reps</div>
+                    <div className="col-span-2">RIR</div>
+                    <div className="col-span-2">Rest (s)</div>
+                    <div className="col-span-2 text-cyan-400">Stimulus HUD</div>
+                    <div className="col-span-1"></div>
+                  </div>
+
+                  {/* Sets mapping */}
+                  <div className="space-y-2">
+                    {log.sets.map((set, setIdx) => {
+                      const estimated1RMVal = calculateEstimated1RM(set.weight, set.reps);
+                      const stimulusVal = calculateStimulusScore(set.rir, set.reps);
+                      const effectiveRepsVal = calculateEffectiveReps(set.rir, set.reps);
+
+                      return (
+                        <div key={set.id} className="grid grid-cols-12 gap-2 items-center text-center">
+                          <div className="col-span-1 text-xs text-neutral-400 font-mono">{setIdx + 1}</div>
+                          
+                          {/* Weight */}
+                          <div className="col-span-2">
+                            <input 
+                              type="number"
+                              value={set.weight}
+                              onChange={(e) => updateSetField(log.id, set.id, "weight", parseFloat(e.target.value) || 0)}
+                              className="w-full bg-neutral-900 border border-neutral-800 rounded-md py-1 px-1.5 text-xs text-white text-center font-mono focus:outline-none focus:border-cyan-500"
+                            />
+                          </div>
+
+                          {/* Reps */}
+                          <div className="col-span-2">
+                            <input 
+                              type="number"
+                              value={set.reps}
+                              onChange={(e) => updateSetField(log.id, set.id, "reps", parseInt(e.target.value) || 0)}
+                              className="w-full bg-neutral-900 border border-neutral-800 rounded-md py-1 px-1.5 text-xs text-white text-center font-mono focus:outline-none focus:border-cyan-500"
+                            />
+                          </div>
+
+                          {/* RIR Selection */}
+                          <div className="col-span-2">
+                            <select 
+                              value={set.rir}
+                              onChange={(e) => updateSetField(log.id, set.id, "rir", parseInt(e.target.value))}
+                              className="w-full bg-neutral-900 border border-neutral-800 rounded-md py-1 px-1 text-xs text-white text-center font-mono focus:outline-none focus:border-cyan-500"
+                            >
+                              <option value={0}>0 (Failure)</option>
+                              <option value={1}>1 RIR</option>
+                              <option value={2}>2 RIR</option>
+                              <option value={3}>3 RIR</option>
+                              <option value={4}>4 RIR</option>
+                              <option value={5}>5+ RIR</option>
+                            </select>
+                          </div>
+
+                          {/* Rest Time */}
+                          <div className="col-span-2">
+                            <input 
+                              type="number"
+                              value={set.restTime}
+                              onChange={(e) => updateSetField(log.id, set.id, "restTime", parseInt(e.target.value) || 0)}
+                              className="w-full bg-neutral-900 border border-neutral-800 rounded-md py-1 px-1.5 text-xs text-white text-center font-mono focus:outline-none focus:border-cyan-500"
+                            />
+                          </div>
+
+                          {/* Scientific Output Live Display */}
+                          <div className="col-span-2 flex flex-col justify-center text-[10px] font-mono text-left pl-2">
+                            <span className="text-cyan-400 font-bold">STIM: {stimulusVal}/10</span>
+                            <span className="text-emerald-400">EFF REPS: {effectiveRepsVal}</span>
+                            <span className="text-neutral-400">1RM: {estimated1RMVal}kg</span>
+                          </div>
+
+                          {/* Actions */}
+                          <div className="col-span-1">
+                            <button 
+                              onClick={() => removeSetFromExercise(log.id, set.id)}
+                              className="text-neutral-500 hover:text-rose-400 p-1"
+                              disabled={log.sets.length <= 1}
+                              title="Delete set"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  <button 
+                    onClick={() => addSetToExercise(log.id)}
+                    className="w-full py-1.5 bg-neutral-900 hover:bg-neutral-800 text-[11px] text-neutral-300 font-mono rounded-lg border border-neutral-800 flex items-center justify-center gap-1.5 transition-all"
+                  >
+                    <Plus className="w-3.5 h-3.5" /> Add Performance Set
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+
+          <button 
+            onClick={addNewExercise}
+            className="w-full py-3 bg-neutral-950 hover:bg-neutral-900 border border-dashed border-neutral-800 hover:border-cyan-500/40 text-xs text-neutral-400 hover:text-cyan-400 font-sans rounded-xl mt-6 flex items-center justify-center gap-2 transition-all cursor-pointer"
+          >
+            <Plus className="w-4 h-4" /> Expand Custom Biological Lift
+          </button>
+        </div>
+
+        {/* Text Area for Notes */}
+        <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6">
+          <label className="block text-sm font-bold text-white mb-2">Subjective Bio-Feedback & Rest Notes</label>
+          <textarea 
+            value={sessionNotes}
+            onChange={(e) => setSessionNotes(e.target.value)}
+            rows={3}
+            placeholder="Record neural fatigue, joints soreness status, sleep state, or mind-muscle connection feedbacks..."
+            className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-cyan-500/70 font-sans leading-relaxed"
+          />
+        </div>
+      </div>
+
+      {/* Completed Session Archives (Takes 1/3) */}
+      <div className="space-y-6">
+        <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6">
+          <h3 className="text-sm font-semibold tracking-wider font-mono text-neutral-300 uppercase mb-4 flex items-center gap-2">
+            <History className="w-4 h-4 text-cyan-400" />
+            Session Archives
+          </h3>
+
+          <div className="space-y-4 max-h-[750px] overflow-y-auto pr-1">
+            {sessions.length === 0 ? (
+              <div className="text-center py-8 bg-neutral-950 rounded-xl border border-neutral-800">
+                <p className="text-xs text-neutral-500">No sessions logged yet.</p>
+              </div>
+            ) : (
+              sessions.map((session) => (
+                <div key={session.id} className="bg-neutral-950 border border-neutral-850 p-4 rounded-xl space-y-3 relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-16 h-16 bg-cyan-500/2 rounded-full blur-xl" />
+                  
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h4 className="text-xs font-bold text-white leading-relaxed">{session.name}</h4>
+                      <div className="flex items-center gap-3 text-[10px] text-neutral-500 font-mono mt-0.5">
+                        <span className="flex items-center gap-1">
+                          <Calendar className="w-3 h-3" />
+                          {new Date(session.timestamp).toLocaleDateString()}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <Clock className="w-3 h-3" />
+                          {session.durationMinutes} min
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {session.notes && (
+                    <p className="text-[10px] text-neutral-400 italic bg-neutral-900/60 p-2 rounded border border-neutral-850/60 leading-normal">
+                      "{session.notes}"
+                    </p>
+                  )}
+
+                  {/* Summary lists */}
+                  <div className="space-y-1 pt-2 border-t border-neutral-800/60">
+                    {session.exercises.map((we, idx) => {
+                      const exerciseDef = EXERCISE_DATABASE.find(e => e.id === we.exerciseId);
+                      const repsLogged = we.sets.filter(s => s.reps > 0);
+                      const totalSets = repsLogged.length;
+                      const maxWeight = Math.max(...repsLogged.map(s => s.weight), 0);
+                      return (
+                        <div key={we.id} className="flex justify-between text-[11px] font-mono text-neutral-400">
+                          <span className="truncate max-w-[120px] text-neutral-200">
+                            {exerciseDef ? exerciseDef.name : "Exercise"}
+                          </span>
+                          <span>
+                            {totalSets} Sets × {maxWeight}kg Max
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

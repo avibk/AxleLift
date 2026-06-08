@@ -1,0 +1,6 @@
+{
+  "name": "Science-Based Lifting OS",
+  "description": "An intelligent, evidence-based lifting operating system featuring workout logging, a progression engine, muscle growth analytics, an ELO rating system, a science feed, and an interactive AI gym coach.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
