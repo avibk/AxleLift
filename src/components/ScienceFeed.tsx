@@ -29,7 +29,7 @@ export default function ScienceFeed({ onDiscussArticle }: ScienceFeedProps) {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-2">
         <div>
           <h2 className="text-xl font-bold text-white tracking-tight flex items-center gap-2">
-            <BookOpen className="w-5 h-5 text-cyan-400" />
+            <BookOpen className="w-5 h-5 text-violet-400" />
             Biological Hypertrophy Feed
           </h2>
           <p className="text-xs text-neutral-400">
@@ -44,7 +44,7 @@ export default function ScienceFeed({ onDiscussArticle }: ScienceFeedProps) {
             placeholder="Search physiology literature..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-neutral-900 border border-neutral-800 rounded-xl pl-10 pr-4 py-2 text-xs text-white placeholder-neutral-500 focus:outline-none focus:border-cyan-500/70"
+            className="w-full bg-neutral-900 border border-neutral-800 rounded-xl pl-10 pr-4 py-2 text-xs text-white placeholder-neutral-500 focus:outline-none focus:border-violet-500/70"
           />
           <Search className="w-4 h-4 text-neutral-500 absolute left-3.5 top-2.5" />
         </div>
@@ -58,7 +58,7 @@ export default function ScienceFeed({ onDiscussArticle }: ScienceFeedProps) {
             onClick={() => setActiveCategory(cat)}
             className={`px-3 py-1.5 rounded-xl text-xs font-semibold font-mono tracking-tight transition-all duration-200 border ${
               activeCategory === cat
-                ? "bg-cyan-500/10 text-cyan-400 border-cyan-500/30"
+                ? "bg-violet-500/10 text-violet-400 border-violet-500/30"
                 : "bg-neutral-900 text-neutral-400 border-neutral-850 hover:text-neutral-300 hover:bg-neutral-850"
             }`}
           >
@@ -77,9 +77,9 @@ export default function ScienceFeed({ onDiscussArticle }: ScienceFeedProps) {
           {filteredArticles.map((article) => (
             <div
               key={article.id}
-              className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6 flex flex-col justify-between relative overflow-hidden group hover:border-cyan-500/20 transition-all duration-300"
+              className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6 flex flex-col justify-between relative overflow-hidden group hover:border-violet-500/20 transition-all duration-300"
             >
-              <div className="absolute top-0 right-0 w-24 h-24 bg-cyan-500/[0.01] rounded-full blur-2xl pointer-events-none" />
+              <div className="absolute top-0 right-0 w-24 h-24 bg-violet-500/[0.01] rounded-full blur-2xl pointer-events-none" />
 
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
@@ -91,7 +91,7 @@ export default function ScienceFeed({ onDiscussArticle }: ScienceFeedProps) {
                   </span>
                 </div>
 
-                <h3 className="text-md font-bold text-white tracking-tight leading-snug group-hover:text-cyan-400 transition-colors">
+                <h3 className="text-md font-bold text-white tracking-tight leading-snug group-hover:text-violet-400 transition-colors">
                   {article.title}
                 </h3>
 
@@ -117,8 +117,8 @@ export default function ScienceFeed({ onDiscussArticle }: ScienceFeedProps) {
                 </div>
 
                 {/* Practical Takeaway */}
-                <div className="bg-cyan-500/5 p-3.5 border border-cyan-500/10 rounded-xl space-y-1">
-                  <div className="flex items-center gap-1.5 text-cyan-400 text-[10px] font-mono font-bold uppercase">
+                <div className="bg-violet-500/5 p-3.5 border border-violet-500/10 rounded-xl space-y-1">
+                  <div className="flex items-center gap-1.5 text-violet-400 text-[10px] font-mono font-bold uppercase">
                     <Award className="w-3.5 h-3.5" />
                     Direct Gym Takeaway
                   </div>
@@ -137,7 +137,7 @@ export default function ScienceFeed({ onDiscussArticle }: ScienceFeedProps) {
 
                 <button
                   onClick={() => onDiscussArticle(article.title)}
-                  className="px-3 py-1.5 text-[11px] font-mono font-bold text-cyan-400 hover:text-white bg-cyan-500/5 hover:bg-cyan-500/20 border border-cyan-500/20 rounded-xl flex items-center gap-1.5 transition-all self-end sm:self-auto cursor-pointer"
+                  className="px-3 py-1.5 text-[11px] font-mono font-bold text-violet-400 hover:text-white bg-violet-500/5 hover:bg-violet-500/20 border border-violet-500/20 rounded-xl flex items-center gap-1.5 transition-all self-end sm:self-auto cursor-pointer"
                 >
                   <MessageSquare className="w-3.5 h-3.5" /> Ask AI Coach
                 </button>

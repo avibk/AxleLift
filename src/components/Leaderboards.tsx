@@ -9,7 +9,7 @@ export default function Leaderboards() {
   // Rank specifications for the user help block
   const RANK_TIERS = [
     { title: "Novice", eloRange: "0 - 1000", bg: "bg-neutral-800/40 text-neutral-400 border-neutral-700", symbol: "🥉" },
-    { title: "Intermediate", eloRange: "1000 - 1500", bg: "bg-cyan-500/10 text-cyan-450 border-cyan-500/20", symbol: "🥈" },
+    { title: "Intermediate", eloRange: "1000 - 1500", bg: "bg-violet-500/10 text-violet-450 border-violet-500/20", symbol: "🥈" },
     { title: "Advanced", eloRange: "1500 - 2000", bg: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20", symbol: "🥇" },
     { title: "Elite", eloRange: "2000 - 2500", bg: "bg-indigo-500/10 text-indigo-400 border-indigo-500/20", symbol: "💎" },
     { title: "Evidence-Based Monster", eloRange: "2500+", bg: "bg-amber-500/10 text-amber-400 border-amber-500/20", symbol: "👑" }
@@ -31,11 +31,11 @@ export default function Leaderboards() {
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         {/* Active Season Banner */}
         <div className="lg:col-span-3 bg-neutral-900 border border-neutral-800 rounded-2xl p-6 relative overflow-hidden flex flex-col justify-between">
-          <div className="absolute top-0 right-0 w-48 h-48 bg-cyan-500/2 rounded-full blur-3xl" />
+          <div className="absolute top-0 right-0 w-48 h-48 bg-violet-500/2 rounded-full blur-3xl" />
           
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <span className="p-1 rounded-md bg-cyan-500/10 border border-cyan-500/20 text-cyan-400">
+              <span className="p-1 rounded-md bg-violet-500/10 border border-violet-500/20 text-violet-400">
                 <Calendar className="w-4 h-4" />
               </span>
               <h3 className="text-sm font-bold font-mono tracking-wider text-neutral-300 uppercase">Mesocycle Competition Profile</h3>
@@ -49,7 +49,7 @@ export default function Leaderboards() {
 
           <div className="flex flex-wrap items-center gap-4 mt-6 pt-4 border-t border-neutral-800/80">
             <span className="text-[10px] text-neutral-500 font-mono uppercase">Seasonal Badges:</span>
-            <span className="px-2 py-1 bg-cyan-500/5 text-cyan-400 text-[10px] font-mono font-bold rounded-lg border border-cyan-500/20 flex items-center gap-1">
+            <span className="px-2 py-1 bg-violet-500/5 text-violet-400 text-[10px] font-mono font-bold rounded-lg border border-violet-500/20 flex items-center gap-1">
               🏆 Top 1% Bench
             </span>
             <span className="px-2 py-1 bg-emerald-500/5 text-emerald-400 text-[10px] font-mono font-bold rounded-lg border border-emerald-500/20 flex items-center gap-1">
@@ -64,7 +64,7 @@ export default function Leaderboards() {
         {/* ELO Rank Calibration */}
         <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-5 space-y-4">
           <h3 className="text-xs font-bold font-mono text-neutral-300 uppercase tracking-wider flex items-center gap-1.5">
-            <Trophy className="w-3.5 h-3.5 text-cyan-400" />
+            <Trophy className="w-3.5 h-3.5 text-violet-400" />
             Rank Calibration
           </h3>
           <div className="space-y-2">
@@ -89,7 +89,7 @@ export default function Leaderboards() {
             onClick={() => setActiveBoard("bench")}
             className={`w-full text-left px-4 py-3 rounded-xl border text-xs font-semibold flex items-center gap-3 transition-all ${
               activeBoard === "bench"
-                ? "bg-cyan-500/10 text-cyan-400 border-cyan-500/30"
+                ? "bg-violet-500/10 text-violet-400 border-violet-500/30"
                 : "bg-neutral-900 border-neutral-800 text-neutral-400 hover:text-neutral-300"
             }`}
           >
@@ -100,7 +100,7 @@ export default function Leaderboards() {
             onClick={() => setActiveBoard("relative")}
             className={`w-full text-left px-4 py-3 rounded-xl border text-xs font-semibold flex items-center gap-3 transition-all ${
               activeBoard === "relative"
-                ? "bg-cyan-500/10 text-cyan-400 border-cyan-500/30"
+                ? "bg-violet-500/10 text-violet-400 border-violet-500/30"
                 : "bg-neutral-900 border-neutral-800 text-neutral-400 hover:text-neutral-300"
             }`}
           >
@@ -111,7 +111,7 @@ export default function Leaderboards() {
             onClick={() => setActiveBoard("progress")}
             className={`w-full text-left px-4 py-3 rounded-xl border text-xs font-semibold flex items-center gap-3 transition-all ${
               activeBoard === "progress"
-                ? "bg-cyan-500/10 text-cyan-400 border-cyan-500/30"
+                ? "bg-violet-500/10 text-violet-400 border-violet-500/30"
                 : "bg-neutral-900 border-neutral-800 text-neutral-400 hover:text-neutral-300"
             }`}
           >
@@ -122,7 +122,7 @@ export default function Leaderboards() {
             onClick={() => setActiveBoard("consistency")}
             className={`w-full text-left px-4 py-3 rounded-xl border text-xs font-semibold flex items-center gap-3 transition-all ${
               activeBoard === "consistency"
-                ? "bg-cyan-500/10 text-cyan-400 border-cyan-500/30"
+                ? "bg-violet-500/10 text-violet-400 border-violet-500/30"
                 : "bg-neutral-900 border-neutral-800 text-neutral-400 hover:text-neutral-300"
             }`}
           >
@@ -133,7 +133,7 @@ export default function Leaderboards() {
             onClick={() => setActiveBoard("science")}
             className={`w-full text-left px-4 py-3 rounded-xl border text-xs font-semibold flex items-center gap-3 transition-all ${
               activeBoard === "science"
-                ? "bg-cyan-500/10 text-cyan-400 border-cyan-500/30"
+                ? "bg-violet-500/10 text-violet-400 border-violet-500/30"
                 : "bg-neutral-900 border-neutral-800 text-neutral-400 hover:text-neutral-300"
             }`}
           >
@@ -161,11 +161,11 @@ export default function Leaderboards() {
                     key={item.id} 
                     className={`flex items-center justify-between p-4 rounded-xl border ${
                       isSelf 
-                        ? "bg-cyan-500/10 border-cyan-500/35 relative overflow-hidden" 
+                        ? "bg-violet-500/10 border-violet-500/35 relative overflow-hidden" 
                         : "bg-neutral-950 border-neutral-850"
                     }`}
                   >
-                    {isSelf && <div className="absolute left-0 top-0 bottom-0 w-1 bg-cyan-400" />}
+                    {isSelf && <div className="absolute left-0 top-0 bottom-0 w-1 bg-violet-400" />}
 
                     <div className="flex items-center gap-4">
                       {/* Medals */}
@@ -178,7 +178,7 @@ export default function Leaderboards() {
 
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className={`text-xs font-bold ${isSelf ? "text-cyan-400" : "text-white"}`}>
+                          <span className={`text-xs font-bold ${isSelf ? "text-violet-400" : "text-white"}`}>
                             {item.username}
                           </span>
                           <span className="text-[9px] px-1.5 py-0.2 rounded bg-neutral-900 text-neutral-500 border border-neutral-800 font-mono uppercase">

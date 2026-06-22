@@ -151,7 +151,7 @@ export default function WorkoutLogger({ sessions, onSaveSession }: WorkoutLogger
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
             <div>
               <h2 className="text-xl font-bold text-white tracking-tight flex items-center gap-2">
-                <Dumbbell className="w-5 h-5 text-cyan-400" />
+                <Dumbbell className="w-5 h-5 text-violet-400" />
                 Live Science Gym Session
               </h2>
               <p className="text-xs text-neutral-400">
@@ -168,7 +168,7 @@ export default function WorkoutLogger({ sessions, onSaveSession }: WorkoutLogger
               </button>
               <button 
                 onClick={handleSave}
-                className="px-4 py-1.5 bg-cyan-600 hover:bg-cyan-500 text-neutral-900 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all shadow-md"
+                className="px-4 py-1.5 bg-violet-600 hover:bg-violet-500 text-neutral-900 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all shadow-md"
               >
                 <Save className="w-3.5 h-3.5" />
                 Submit Session
@@ -185,7 +185,7 @@ export default function WorkoutLogger({ sessions, onSaveSession }: WorkoutLogger
                 onChange={(e) => setSessionName(e.target.value)}
                 type="text"
                 placeholder="e.g. Upper Chest Specialization"
-                className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-500/70"
+                className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-violet-500/70"
               />
             </div>
             <div>
@@ -194,12 +194,12 @@ export default function WorkoutLogger({ sessions, onSaveSession }: WorkoutLogger
                 value={duration}
                 onChange={(e) => setDuration(parseInt(e.target.value) || 0)}
                 type="number"
-                className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-500/70"
+                className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-violet-500/70"
               />
             </div>
             <div>
               <label className="block text-[10px] font-mono text-neutral-500 uppercase mb-1">Target Intensity Focus</label>
-              <select className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3 py-2 text-sm text-neutral-300 focus:outline-none focus:border-cyan-500/70">
+              <select className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3 py-2 text-sm text-neutral-300 focus:outline-none focus:border-violet-500/70">
                 <option>Myofibrillar Hypertrophy (6-12 Reps)</option>
                 <option>Absolute Strength (3-5 Reps)</option>
                 <option>Sarcoplasmic / Metabolic Max (15+ Reps)</option>
@@ -222,7 +222,7 @@ export default function WorkoutLogger({ sessions, onSaveSession }: WorkoutLogger
                       <select 
                         value={log.exerciseId}
                         onChange={(e) => handleExerciseChange(log.id, e.target.value)}
-                        className="w-full bg-neutral-900 border border-neutral-800 rounded-lg px-3 py-1.5 text-xs text-white font-semibold focus:outline-none focus:border-cyan-500"
+                        className="w-full bg-neutral-900 border border-neutral-800 rounded-lg px-3 py-1.5 text-xs text-white font-semibold focus:outline-none focus:border-violet-500"
                       >
                         {EXERCISE_DATABASE.map(ex => (
                           <option key={ex.id} value={ex.id}>{ex.name}</option>
@@ -240,11 +240,11 @@ export default function WorkoutLogger({ sessions, onSaveSession }: WorkoutLogger
 
                   {/* Active Progression Overlay Hint */}
                   {progressionRec && progressionRec.originalWeight > 0 && (
-                    <div className="p-2.5 bg-cyan-950/20 border border-cyan-500/20 rounded-lg text-xs flex gap-2 items-start">
-                      <Sparkles className="w-4 h-4 text-cyan-400 flex-shrink-0 mt-0.5" />
+                    <div className="p-2.5 bg-violet-950/20 border border-violet-500/20 rounded-lg text-xs flex gap-2 items-start">
+                      <Sparkles className="w-4 h-4 text-violet-400 flex-shrink-0 mt-0.5" />
                       <div>
                         <p className="text-[11px] text-neutral-300">
-                          <span className="font-bold text-cyan-400">Overload Target: </span>
+                          <span className="font-bold text-violet-400">Overload Target: </span>
                           Aim for <span className="font-bold">{progressionRec.targetWeight}kg × {progressionRec.targetRepsRange}</span> based on your previous session performance of {progressionRec.originalWeight}kg × {progressionRec.originalReps}.
                         </p>
                       </div>
@@ -258,7 +258,7 @@ export default function WorkoutLogger({ sessions, onSaveSession }: WorkoutLogger
                     <div className="col-span-2">Reps</div>
                     <div className="col-span-2">RIR</div>
                     <div className="col-span-2">Rest (s)</div>
-                    <div className="col-span-2 text-cyan-400">Stimulus HUD</div>
+                    <div className="col-span-2 text-violet-400">Stimulus HUD</div>
                     <div className="col-span-1"></div>
                   </div>
 
@@ -279,7 +279,7 @@ export default function WorkoutLogger({ sessions, onSaveSession }: WorkoutLogger
                               type="number"
                               value={set.weight}
                               onChange={(e) => updateSetField(log.id, set.id, "weight", parseFloat(e.target.value) || 0)}
-                              className="w-full bg-neutral-900 border border-neutral-800 rounded-md py-1 px-1.5 text-xs text-white text-center font-mono focus:outline-none focus:border-cyan-500"
+                              className="w-full bg-neutral-900 border border-neutral-800 rounded-md py-1 px-1.5 text-xs text-white text-center font-mono focus:outline-none focus:border-violet-500"
                             />
                           </div>
 
@@ -289,7 +289,7 @@ export default function WorkoutLogger({ sessions, onSaveSession }: WorkoutLogger
                               type="number"
                               value={set.reps}
                               onChange={(e) => updateSetField(log.id, set.id, "reps", parseInt(e.target.value) || 0)}
-                              className="w-full bg-neutral-900 border border-neutral-800 rounded-md py-1 px-1.5 text-xs text-white text-center font-mono focus:outline-none focus:border-cyan-500"
+                              className="w-full bg-neutral-900 border border-neutral-800 rounded-md py-1 px-1.5 text-xs text-white text-center font-mono focus:outline-none focus:border-violet-500"
                             />
                           </div>
 
@@ -298,7 +298,7 @@ export default function WorkoutLogger({ sessions, onSaveSession }: WorkoutLogger
                             <select 
                               value={set.rir}
                               onChange={(e) => updateSetField(log.id, set.id, "rir", parseInt(e.target.value))}
-                              className="w-full bg-neutral-900 border border-neutral-800 rounded-md py-1 px-1 text-xs text-white text-center font-mono focus:outline-none focus:border-cyan-500"
+                              className="w-full bg-neutral-900 border border-neutral-800 rounded-md py-1 px-1 text-xs text-white text-center font-mono focus:outline-none focus:border-violet-500"
                             >
                               <option value={0}>0 (Failure)</option>
                               <option value={1}>1 RIR</option>
@@ -315,13 +315,13 @@ export default function WorkoutLogger({ sessions, onSaveSession }: WorkoutLogger
                               type="number"
                               value={set.restTime}
                               onChange={(e) => updateSetField(log.id, set.id, "restTime", parseInt(e.target.value) || 0)}
-                              className="w-full bg-neutral-900 border border-neutral-800 rounded-md py-1 px-1.5 text-xs text-white text-center font-mono focus:outline-none focus:border-cyan-500"
+                              className="w-full bg-neutral-900 border border-neutral-800 rounded-md py-1 px-1.5 text-xs text-white text-center font-mono focus:outline-none focus:border-violet-500"
                             />
                           </div>
 
                           {/* Scientific Output Live Display */}
                           <div className="col-span-2 flex flex-col justify-center text-[10px] font-mono text-left pl-2">
-                            <span className="text-cyan-400 font-bold">STIM: {stimulusVal}/10</span>
+                            <span className="text-violet-400 font-bold">STIM: {stimulusVal}/10</span>
                             <span className="text-emerald-400">EFF REPS: {effectiveRepsVal}</span>
                             <span className="text-neutral-400">1RM: {estimated1RMVal}kg</span>
                           </div>
@@ -355,7 +355,7 @@ export default function WorkoutLogger({ sessions, onSaveSession }: WorkoutLogger
 
           <button 
             onClick={addNewExercise}
-            className="w-full py-3 bg-neutral-950 hover:bg-neutral-900 border border-dashed border-neutral-800 hover:border-cyan-500/40 text-xs text-neutral-400 hover:text-cyan-400 font-sans rounded-xl mt-6 flex items-center justify-center gap-2 transition-all cursor-pointer"
+            className="w-full py-3 bg-neutral-950 hover:bg-neutral-900 border border-dashed border-neutral-800 hover:border-violet-500/40 text-xs text-neutral-400 hover:text-violet-400 font-sans rounded-xl mt-6 flex items-center justify-center gap-2 transition-all cursor-pointer"
           >
             <Plus className="w-4 h-4" /> Expand Custom Biological Lift
           </button>
@@ -369,7 +369,7 @@ export default function WorkoutLogger({ sessions, onSaveSession }: WorkoutLogger
             onChange={(e) => setSessionNotes(e.target.value)}
             rows={3}
             placeholder="Record neural fatigue, joints soreness status, sleep state, or mind-muscle connection feedbacks..."
-            className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-cyan-500/70 font-sans leading-relaxed"
+            className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-violet-500/70 font-sans leading-relaxed"
           />
         </div>
       </div>
@@ -378,7 +378,7 @@ export default function WorkoutLogger({ sessions, onSaveSession }: WorkoutLogger
       <div className="space-y-6">
         <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6">
           <h3 className="text-sm font-semibold tracking-wider font-mono text-neutral-300 uppercase mb-4 flex items-center gap-2">
-            <History className="w-4 h-4 text-cyan-400" />
+            <History className="w-4 h-4 text-violet-400" />
             Session Archives
           </h3>
 
@@ -390,7 +390,7 @@ export default function WorkoutLogger({ sessions, onSaveSession }: WorkoutLogger
             ) : (
               sessions.map((session) => (
                 <div key={session.id} className="bg-neutral-950 border border-neutral-850 p-4 rounded-xl space-y-3 relative overflow-hidden">
-                  <div className="absolute top-0 right-0 w-16 h-16 bg-cyan-500/2 rounded-full blur-xl" />
+                  <div className="absolute top-0 right-0 w-16 h-16 bg-violet-500/2 rounded-full blur-xl" />
                   
                   <div className="flex justify-between items-start">
                     <div>
