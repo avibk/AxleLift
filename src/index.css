@@ -12,3 +12,6 @@
 /* Hide scrollbars inside the phone frame for a native feel */
 main::-webkit-scrollbar { width: 0; height: 0; }
 main { scrollbar-width: none; }
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }

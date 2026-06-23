@@ -1,13 +1,9 @@
 import React, { useState } from "react";
 import { ScienceArticle } from "../types";
 import { CURATED_SCIENCE_FEED } from "../data";
-import { BookOpen, Search, ArrowUpRight, Award, MessageSquare, AlertCircle, Quote } from "lucide-react";
+import { BookOpen, Search, Award, AlertCircle, Quote, Eye } from "lucide-react";
 
-interface ScienceFeedProps {
-  onDiscussArticle: (articleName: string) => void;
-}
-
-export default function ScienceFeed({ onDiscussArticle }: ScienceFeedProps) {
+export default function ScienceFeed() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<string>("All");
 
@@ -135,12 +131,9 @@ export default function ScienceFeed({ onDiscussArticle }: ScienceFeedProps) {
                   <span>{article.citation}</span>
                 </div>
 
-                <button
-                  onClick={() => onDiscussArticle(article.title)}
-                  className="px-3 py-1.5 text-[11px] font-mono font-bold text-violet-400 hover:text-white bg-violet-500/5 hover:bg-violet-500/20 border border-violet-500/20 rounded-xl flex items-center gap-1.5 transition-all self-end sm:self-auto cursor-pointer"
-                >
-                  <MessageSquare className="w-3.5 h-3.5" /> Ask AI Coach
-                </button>
+                <span className="px-3 py-1.5 text-[11px] font-mono font-bold text-neutral-400 bg-neutral-950 border border-neutral-800 rounded-xl flex items-center gap-1.5 self-end sm:self-auto">
+                  <Eye className="w-3.5 h-3.5" /> {article.readCount.toLocaleString()} reads
+                </span>
               </div>
             </div>
           ))}

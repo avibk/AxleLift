@@ -251,91 +251,79 @@ export default function WorkoutLogger({ sessions, onSaveSession }: WorkoutLogger
                     </div>
                   )}
 
-                  {/* Table headers */}
-                  <div className="grid grid-cols-12 gap-2 text-center text-[10px] font-mono text-neutral-500 uppercase">
-                    <div className="col-span-1">Set</div>
-                    <div className="col-span-2">Weight (kg)</div>
-                    <div className="col-span-2">Reps</div>
-                    <div className="col-span-2">RIR</div>
-                    <div className="col-span-2">Rest (s)</div>
-                    <div className="col-span-2 text-violet-400">Stimulus HUD</div>
-                    <div className="col-span-1"></div>
-                  </div>
-
-                  {/* Sets mapping */}
-                  <div className="space-y-2">
+                  {/* Sets (mobile stacked cards) */}
+                  <div className="space-y-3">
                     {log.sets.map((set, setIdx) => {
                       const estimated1RMVal = calculateEstimated1RM(set.weight, set.reps);
                       const stimulusVal = calculateStimulusScore(set.rir, set.reps);
                       const effectiveRepsVal = calculateEffectiveReps(set.rir, set.reps);
 
                       return (
-                        <div key={set.id} className="grid grid-cols-12 gap-2 items-center text-center">
-                          <div className="col-span-1 text-xs text-neutral-400 font-mono">{setIdx + 1}</div>
-                          
-                          {/* Weight */}
-                          <div className="col-span-2">
-                            <input 
-                              type="number"
-                              value={set.weight}
-                              onChange={(e) => updateSetField(log.id, set.id, "weight", parseFloat(e.target.value) || 0)}
-                              className="w-full bg-neutral-900 border border-neutral-800 rounded-md py-1 px-1.5 text-xs text-white text-center font-mono focus:outline-none focus:border-violet-500"
-                            />
-                          </div>
-
-                          {/* Reps */}
-                          <div className="col-span-2">
-                            <input 
-                              type="number"
-                              value={set.reps}
-                              onChange={(e) => updateSetField(log.id, set.id, "reps", parseInt(e.target.value) || 0)}
-                              className="w-full bg-neutral-900 border border-neutral-800 rounded-md py-1 px-1.5 text-xs text-white text-center font-mono focus:outline-none focus:border-violet-500"
-                            />
-                          </div>
-
-                          {/* RIR Selection */}
-                          <div className="col-span-2">
-                            <select 
-                              value={set.rir}
-                              onChange={(e) => updateSetField(log.id, set.id, "rir", parseInt(e.target.value))}
-                              className="w-full bg-neutral-900 border border-neutral-800 rounded-md py-1 px-1 text-xs text-white text-center font-mono focus:outline-none focus:border-violet-500"
-                            >
-                              <option value={0}>0 (Failure)</option>
-                              <option value={1}>1 RIR</option>
-                              <option value={2}>2 RIR</option>
-                              <option value={3}>3 RIR</option>
-                              <option value={4}>4 RIR</option>
-                              <option value={5}>5+ RIR</option>
-                            </select>
-                          </div>
-
-                          {/* Rest Time */}
-                          <div className="col-span-2">
-                            <input 
-                              type="number"
-                              value={set.restTime}
-                              onChange={(e) => updateSetField(log.id, set.id, "restTime", parseInt(e.target.value) || 0)}
-                              className="w-full bg-neutral-900 border border-neutral-800 rounded-md py-1 px-1.5 text-xs text-white text-center font-mono focus:outline-none focus:border-violet-500"
-                            />
-                          </div>
-
-                          {/* Scientific Output Live Display */}
-                          <div className="col-span-2 flex flex-col justify-center text-[10px] font-mono text-left pl-2">
-                            <span className="text-violet-400 font-bold">STIM: {stimulusVal}/10</span>
-                            <span className="text-emerald-400">EFF REPS: {effectiveRepsVal}</span>
-                            <span className="text-neutral-400">1RM: {estimated1RMVal}kg</span>
-                          </div>
-
-                          {/* Actions */}
-                          <div className="col-span-1">
-                            <button 
+                        <div key={set.id} className="bg-neutral-900 border border-neutral-800 rounded-xl p-3">
+                          <div className="flex items-center justify-between mb-2.5">
+                            <span className="text-xs font-bold text-white font-mono">Set {setIdx + 1}</span>
+                            <button
                               onClick={() => removeSetFromExercise(log.id, set.id)}
-                              className="text-neutral-500 hover:text-rose-400 p-1"
+                              className="text-neutral-500 hover:text-rose-400 disabled:opacity-30 p-1"
                               disabled={log.sets.length <= 1}
                               title="Delete set"
                             >
-                              <Trash2 className="w-3.5 h-3.5" />
+                              <Trash2 className="w-4 h-4" />
                             </button>
+                          </div>
+
+                          <div className="grid grid-cols-4 gap-2">
+                            <div>
+                              <label className="block text-[9px] font-mono text-neutral-500 uppercase mb-1 text-center">KG</label>
+                              <input
+                                type="number"
+                                inputMode="decimal"
+                                value={set.weight}
+                                onChange={(e) => updateSetField(log.id, set.id, "weight", parseFloat(e.target.value) || 0)}
+                                className="w-full bg-neutral-950 border border-neutral-800 rounded-lg py-2 px-1 text-sm text-white text-center font-mono focus:outline-none focus:border-violet-500"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-[9px] font-mono text-neutral-500 uppercase mb-1 text-center">Reps</label>
+                              <input
+                                type="number"
+                                inputMode="numeric"
+                                value={set.reps}
+                                onChange={(e) => updateSetField(log.id, set.id, "reps", parseInt(e.target.value) || 0)}
+                                className="w-full bg-neutral-950 border border-neutral-800 rounded-lg py-2 px-1 text-sm text-white text-center font-mono focus:outline-none focus:border-violet-500"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-[9px] font-mono text-neutral-500 uppercase mb-1 text-center">RIR</label>
+                              <select
+                                value={set.rir}
+                                onChange={(e) => updateSetField(log.id, set.id, "rir", parseInt(e.target.value))}
+                                className="w-full bg-neutral-950 border border-neutral-800 rounded-lg py-2 px-1 text-sm text-white text-center font-mono focus:outline-none focus:border-violet-500"
+                              >
+                                <option value={0}>0</option>
+                                <option value={1}>1</option>
+                                <option value={2}>2</option>
+                                <option value={3}>3</option>
+                                <option value={4}>4</option>
+                                <option value={5}>5+</option>
+                              </select>
+                            </div>
+                            <div>
+                              <label className="block text-[9px] font-mono text-neutral-500 uppercase mb-1 text-center">Rest</label>
+                              <input
+                                type="number"
+                                inputMode="numeric"
+                                value={set.restTime}
+                                onChange={(e) => updateSetField(log.id, set.id, "restTime", parseInt(e.target.value) || 0)}
+                                className="w-full bg-neutral-950 border border-neutral-800 rounded-lg py-2 px-1 text-sm text-white text-center font-mono focus:outline-none focus:border-violet-500"
+                              />
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-3 mt-2.5 text-[10px] font-mono">
+                            <span className="text-violet-400 font-bold">STIM {stimulusVal}</span>
+                            <span className="text-emerald-400">EFF {effectiveRepsVal}</span>
+                            <span className="text-neutral-400">1RM {estimated1RMVal}kg</span>
                           </div>
                         </div>
                       );

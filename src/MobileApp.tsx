@@ -4,23 +4,22 @@ import { INITIAL_ELO_PROFILE, INITIAL_WORKOUT_HISTORY } from "./data";
 import Home from "./components/Home";
 import WorkoutLogger from "./components/WorkoutLogger";
 import ScienceFeed from "./components/ScienceFeed";
-import AICoach from "./components/AICoach";
+import Insights from "./components/Insights";
 import Leaderboards from "./components/Leaderboards";
-import { Brain, Dumbbell, BookOpen, Trophy, LayoutGrid, Signal, Wifi, BatteryFull } from "lucide-react";
+import { Activity, Dumbbell, BookOpen, Trophy, LayoutGrid, Signal, Wifi, BatteryFull } from "lucide-react";
 
 const NAV_ITEMS = [
   { id: "dashboard", label: "Home", Icon: LayoutGrid },
   { id: "logger", label: "Log", Icon: Dumbbell },
+  { id: "insights", label: "Insights", Icon: Activity },
   { id: "leaderboards", label: "Ranks", Icon: Trophy },
   { id: "feed", label: "Feed", Icon: BookOpen },
-  { id: "coach", label: "Coach", Icon: Brain },
 ] as const;
 
 export default function MobileApp() {
   const [activeTab, setActiveTab] = useState<string>("dashboard");
   const [sessions, setSessions] = useState<WorkoutSession[]>([]);
   const [userElo, setUserElo] = useState<EloProfile>(INITIAL_ELO_PROFILE);
-  const [coachInitialQuestion, setCoachInitialQuestion] = useState<string>("");
   const [clock, setClock] = useState<string>("9:41");
 
   // Live status-bar clock
@@ -104,15 +103,6 @@ export default function MobileApp() {
     localStorage.setItem("science_lift_elo", JSON.stringify(updatedElo));
   };
 
-  const handleDiscussArticle = (articleTitle: string) => {
-    setCoachInitialQuestion(articleTitle);
-    setActiveTab("coach");
-  };
-
-  const handleClearInitialQuestion = () => {
-    setCoachInitialQuestion("");
-  };
-
   return (
     <div className="min-h-screen bg-black flex justify-center font-sans text-white">
       <div className="relative w-full max-w-[430px] h-screen bg-neutral-950 flex flex-col overflow-hidden md:my-4 md:h-[calc(100vh-2rem)] md:rounded-[44px] md:border-[10px] md:border-neutral-900 md:shadow-2xl">
@@ -141,18 +131,13 @@ export default function MobileApp() {
 
           {activeTab === "feed" && (
             <div className="px-3 pb-8">
-              <ScienceFeed onDiscussArticle={handleDiscussArticle} />
+              <ScienceFeed />
             </div>
           )}
 
-          {activeTab === "coach" && (
+          {activeTab === "insights" && (
             <div className="px-3 pb-8">
-              <AICoach
-                sessions={sessions}
-                userElo={userElo}
-                initialQuestion={coachInitialQuestion}
-                onClearInitialQuestion={handleClearInitialQuestion}
-              />
+              <Insights sessions={sessions} userElo={userElo} />
             </div>
           )}
 

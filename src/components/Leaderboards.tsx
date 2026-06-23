@@ -82,68 +82,33 @@ export default function Leaderboards() {
       </div>
 
       {/* Main leaderboards view */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-        {/* Navigation Sidebar */}
-        <div className="lg:col-span-1 space-y-2">
-          <button
-            onClick={() => setActiveBoard("bench")}
-            className={`w-full text-left px-4 py-3 rounded-xl border text-xs font-semibold flex items-center gap-3 transition-all ${
-              activeBoard === "bench"
-                ? "bg-violet-500/10 text-violet-400 border-violet-500/30"
-                : "bg-neutral-900 border-neutral-800 text-neutral-400 hover:text-neutral-300"
-            }`}
-          >
-            <Dumbbell className="w-4 h-4" />
-            Absolute Bench Press
-          </button>
-          <button
-            onClick={() => setActiveBoard("relative")}
-            className={`w-full text-left px-4 py-3 rounded-xl border text-xs font-semibold flex items-center gap-3 transition-all ${
-              activeBoard === "relative"
-                ? "bg-violet-500/10 text-violet-400 border-violet-500/30"
-                : "bg-neutral-900 border-neutral-800 text-neutral-400 hover:text-neutral-300"
-            }`}
-          >
-            <Award className="w-4 h-4" />
-            Relative Strength (x BW)
-          </button>
-          <button
-            onClick={() => setActiveBoard("progress")}
-            className={`w-full text-left px-4 py-3 rounded-xl border text-xs font-semibold flex items-center gap-3 transition-all ${
-              activeBoard === "progress"
-                ? "bg-violet-500/10 text-violet-400 border-violet-500/30"
-                : "bg-neutral-900 border-neutral-800 text-neutral-400 hover:text-neutral-300"
-            }`}
-          >
-            <TrendingUp className="w-4 h-4" />
-            Most Improved (90d)
-          </button>
-          <button
-            onClick={() => setActiveBoard("consistency")}
-            className={`w-full text-left px-4 py-3 rounded-xl border text-xs font-semibold flex items-center gap-3 transition-all ${
-              activeBoard === "consistency"
-                ? "bg-violet-500/10 text-violet-400 border-violet-500/30"
-                : "bg-neutral-900 border-neutral-800 text-neutral-400 hover:text-neutral-300"
-            }`}
-          >
-            <Flame className="w-4 h-4" />
-            Session Attendance
-          </button>
-          <button
-            onClick={() => setActiveBoard("science")}
-            className={`w-full text-left px-4 py-3 rounded-xl border text-xs font-semibold flex items-center gap-3 transition-all ${
-              activeBoard === "science"
-                ? "bg-violet-500/10 text-violet-400 border-violet-500/30"
-                : "bg-neutral-900 border-neutral-800 text-neutral-400 hover:text-neutral-300"
-            }`}
-          >
-            <Brain className="w-4 h-4" />
-            Lifting Science Score
-          </button>
+      <div className="space-y-4">
+        {/* Board selector pills */}
+        <div className="flex gap-2 overflow-x-auto pb-1 -mx-3 px-3 no-scrollbar">
+          {[
+            { id: "bench", label: "Bench", Icon: Dumbbell },
+            { id: "relative", label: "Relative", Icon: Award },
+            { id: "progress", label: "Improved", Icon: TrendingUp },
+            { id: "consistency", label: "Attendance", Icon: Flame },
+            { id: "science", label: "Science", Icon: Brain },
+          ].map(({ id, label, Icon }) => (
+            <button
+              key={id}
+              onClick={() => setActiveBoard(id as typeof activeBoard)}
+              className={`flex-shrink-0 whitespace-nowrap px-3.5 py-2 rounded-full border text-xs font-semibold flex items-center gap-2 transition-all active:scale-95 ${
+                activeBoard === id
+                  ? "bg-violet-500/10 text-violet-400 border-violet-500/30"
+                  : "bg-neutral-900 border-neutral-800 text-neutral-400"
+              }`}
+            >
+              <Icon className="w-4 h-4" />
+              {label}
+            </button>
+          ))}
         </div>
 
         {/* Board Display Panel */}
-        <div className="lg:col-span-3 space-y-6">
+        <div className="space-y-6">
           <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6">
             <h3 className="text-md font-bold text-white tracking-tight capitalize border-b border-neutral-850 pb-3 mb-2">
               {activeBoard} Leaderboard rankings
