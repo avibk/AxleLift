@@ -104,8 +104,175 @@ export const EXERCISE_DATABASE: Exercise[] = [
       "Keep elbows tucked near your head; do not let them flare wide.",
       "Accentuate the stretch at the bottom with a 1-second dynamic hold."
     ]
+  },
+  {
+    id: "ex-back-squat",
+    name: "Barbell Back Squat",
+    primaryMuscles: [TargetMuscle.QUADS],
+    secondaryMuscles: [TargetMuscle.GLUTES, TargetMuscle.HAMSTRINGS],
+    category: "Legs",
+    explanation: "The king of lower-body compounds, loading the quads and glutes through a deep knee and hip flexion under heavy axial load.",
+    tips: ["Brace your core hard before descending.", "Drive through mid-foot and keep knees tracking over toes."]
+  },
+  {
+    id: "ex-deadlift",
+    name: "Conventional Deadlift",
+    primaryMuscles: [TargetMuscle.BACK, TargetMuscle.HAMSTRINGS],
+    secondaryMuscles: [TargetMuscle.GLUTES, TargetMuscle.QUADS],
+    category: "Back",
+    explanation: "A full-body hip-hinge that builds the posterior chain, spinal erectors, and grip under maximal load.",
+    tips: ["Keep the bar pinned against your shins and legs.", "Push the floor away rather than yanking the bar up."]
+  },
+  {
+    id: "ex-ohp",
+    name: "Barbell Overhead Press",
+    primaryMuscles: [TargetMuscle.SHOULDERS],
+    secondaryMuscles: [TargetMuscle.TRICEPS],
+    category: "Shoulders",
+    explanation: "A standing vertical press that overloads the anterior and lateral deltoids while demanding full-body stability.",
+    tips: ["Squeeze glutes to prevent lower-back arch.", "Shrug slightly at lockout to finish the rep."]
+  },
+  {
+    id: "ex-pullup",
+    name: "Pull-Up",
+    primaryMuscles: [TargetMuscle.BACK],
+    secondaryMuscles: [TargetMuscle.BICEPS],
+    category: "Back",
+    explanation: "A bodyweight vertical pull emphasizing the lats through a full overhead stretch to a chest-high contraction.",
+    tips: ["Initiate by depressing the shoulder blades.", "Control the negative; avoid kipping for hypertrophy."]
+  },
+  {
+    id: "ex-bent-row",
+    name: "Barbell Bent-Over Row",
+    primaryMuscles: [TargetMuscle.BACK],
+    secondaryMuscles: [TargetMuscle.BICEPS],
+    category: "Back",
+    explanation: "A horizontal pull that thickens the mid-back, rhomboids, and lats with heavy loading.",
+    tips: ["Hinge to ~45 degrees and keep a neutral spine.", "Pull to the lower ribcage, not the chest."]
+  },
+  {
+    id: "ex-seated-row",
+    name: "Seated Cable Row",
+    primaryMuscles: [TargetMuscle.BACK],
+    secondaryMuscles: [TargetMuscle.BICEPS],
+    category: "Back",
+    explanation: "A controlled horizontal pull with constant cable tension, ideal for mid-back contraction and a full stretch.",
+    tips: ["Let the shoulder blades protract on the stretch.", "Avoid using torso momentum to move the weight."]
+  },
+  {
+    id: "ex-leg-press",
+    name: "Leg Press",
+    primaryMuscles: [TargetMuscle.QUADS],
+    secondaryMuscles: [TargetMuscle.GLUTES],
+    category: "Legs",
+    explanation: "A machine-stabilized quad builder allowing safe progression to near-failure with high loads.",
+    tips: ["Use a full range without rounding the lower back.", "Keep heels planted throughout the press."]
+  },
+  {
+    id: "ex-leg-extension",
+    name: "Leg Extension",
+    primaryMuscles: [TargetMuscle.QUADS],
+    secondaryMuscles: [],
+    category: "Legs",
+    explanation: "An isolation movement loading the quadriceps, especially the rectus femoris, in a shortened position.",
+    tips: ["Pause briefly at full extension.", "Control the eccentric for a deeper stretch."]
+  },
+  {
+    id: "ex-leg-curl",
+    name: "Lying Leg Curl",
+    primaryMuscles: [TargetMuscle.HAMSTRINGS],
+    secondaryMuscles: [],
+    category: "Legs",
+    explanation: "Isolates the hamstrings via knee flexion with minimal hip involvement.",
+    tips: ["Avoid lifting the hips off the pad.", "Squeeze hard at peak contraction."]
+  },
+  {
+    id: "ex-hip-thrust",
+    name: "Barbell Hip Thrust",
+    primaryMuscles: [TargetMuscle.GLUTES],
+    secondaryMuscles: [TargetMuscle.HAMSTRINGS],
+    category: "Legs",
+    explanation: "The premier glute isolation, peaking tension at full hip extension where the glutes are strongest.",
+    tips: ["Tuck the chin and keep ribs down.", "Pause and squeeze glutes at the top."]
+  },
+  {
+    id: "ex-db-shoulder-press",
+    name: "Dumbbell Shoulder Press",
+    primaryMuscles: [TargetMuscle.SHOULDERS],
+    secondaryMuscles: [TargetMuscle.TRICEPS],
+    category: "Shoulders",
+    explanation: "A seated vertical press allowing a greater range of motion and independent shoulder loading.",
+    tips: ["Lower until elbows are just below shoulder height.", "Avoid clashing dumbbells at the top."]
+  },
+  {
+    id: "ex-db-lateral-raise",
+    name: "Dumbbell Lateral Raise",
+    primaryMuscles: [TargetMuscle.SHOULDERS],
+    secondaryMuscles: [],
+    category: "Shoulders",
+    explanation: "Isolates the lateral deltoid for shoulder width via pure abduction.",
+    tips: ["Lead with the elbows, not the hands.", "Use a slow tempo and avoid swinging."]
+  },
+  {
+    id: "ex-face-pull",
+    name: "Cable Face Pull",
+    primaryMuscles: [TargetMuscle.SHOULDERS],
+    secondaryMuscles: [TargetMuscle.BACK],
+    category: "Shoulders",
+    explanation: "Targets the rear delts and upper-back rotators, improving posture and shoulder health.",
+    tips: ["Pull toward the forehead with high elbows.", "Externally rotate at the end range."]
+  },
+  {
+    id: "ex-bicep-curl",
+    name: "Dumbbell Bicep Curl",
+    primaryMuscles: [TargetMuscle.BICEPS],
+    secondaryMuscles: [],
+    category: "Arms",
+    explanation: "A classic isolation loading the biceps through elbow flexion and supination.",
+    tips: ["Keep elbows pinned at your sides.", "Supinate the wrist as you curl up."]
+  },
+  {
+    id: "ex-hammer-curl",
+    name: "Hammer Curl",
+    primaryMuscles: [TargetMuscle.BICEPS],
+    secondaryMuscles: [],
+    category: "Arms",
+    explanation: "A neutral-grip curl emphasizing the brachialis and brachioradialis for arm thickness.",
+    tips: ["Maintain a neutral grip throughout.", "Avoid swinging the torso for momentum."]
+  },
+  {
+    id: "ex-tricep-pushdown",
+    name: "Tricep Cable Pushdown",
+    primaryMuscles: [TargetMuscle.TRICEPS],
+    secondaryMuscles: [],
+    category: "Arms",
+    explanation: "An isolation for the triceps lateral and medial heads under constant cable tension.",
+    tips: ["Keep elbows tucked and still.", "Fully extend and squeeze at the bottom."]
+  },
+  {
+    id: "ex-calf-raise",
+    name: "Standing Calf Raise",
+    primaryMuscles: [TargetMuscle.CALVES],
+    secondaryMuscles: [],
+    category: "Legs",
+    explanation: "Loads the gastrocnemius through a full stretch-to-contraction ankle range.",
+    tips: ["Pause at the bottom stretch.", "Rise onto the big toe at the top."]
+  },
+  {
+    id: "ex-cable-crunch",
+    name: "Cable Crunch",
+    primaryMuscles: [TargetMuscle.ABS],
+    secondaryMuscles: [],
+    category: "Core",
+    explanation: "A loadable ab flexion movement allowing progressive overload of the rectus abdominis.",
+    tips: ["Flex the spine by crunching ribs to pelvis.", "Keep hips fixed; move only the torso."]
   }
 ];
+
+export function getExerciseName(id: string): string {
+  if (id.startsWith("custom:")) return id.slice(7);
+  return EXERCISE_DATABASE.find((e) => e.id === id)?.name || "Exercise";
+}
 
 export const CURATED_SCIENCE_FEED: ScienceArticle[] = [
   {
@@ -176,34 +343,34 @@ export const MOCK_LEADERBOARDS: {
   science: LeaderboardUser[];
 } = {
   bench: [
-    { id: "u-1", username: "DorianDread", score: 220, rankName: GymRank.ELITE, badges: ["🏆 Top 1% Bench"], metaValue: "220 kg" },
-    { id: "u-2", username: "NippardFan99", score: 180, rankName: GymRank.ADVANCED, badges: ["🧠 Science Master"], metaValue: "180 kg" },
-    { id: "u-3", username: "KeenanDisciple", score: 165, rankName: GymRank.ADVANCED, badges: ["💪 Chest Champ"], metaValue: "165 kg" },
-    { id: "user-self", username: "ScienceLifter (You)", score: 140, rankName: GymRank.INTERMEDIATE, badges: ["🔥 30-Day Streak"], metaValue: "140 kg" },
+    { id: "u-1", username: "DorianDread", score: 220, rankName: GymRank.ELITE, badges: ["Top 1% Bench"], metaValue: "220 kg" },
+    { id: "u-2", username: "NippardFan99", score: 180, rankName: GymRank.ADVANCED, badges: ["Science Master"], metaValue: "180 kg" },
+    { id: "u-3", username: "KeenanDisciple", score: 165, rankName: GymRank.ADVANCED, badges: ["Chest Champ"], metaValue: "165 kg" },
+    { id: "user-self", username: "ScienceLifter (You)", score: 140, rankName: GymRank.INTERMEDIATE, badges: ["30-Day Streak"], metaValue: "140 kg" },
     { id: "u-4", username: "EgoStopper", score: 110, rankName: GymRank.INTERMEDIATE, badges: [], metaValue: "110 kg" }
   ],
   relative: [
-    { id: "u-2", username: "NippardFan99", score: 2.3, rankName: GymRank.ADVANCED, badges: ["🧠 Science Master"], metaValue: "2.30 x BW" },
-    { id: "u-12", username: "ElijahMundyFan", score: 2.1, rankName: GymRank.ADVANCED, badges: ["⚡ Lightning Reps"], metaValue: "2.10 x BW" },
-    { id: "user-self", username: "ScienceLifter (You)", score: 1.85, rankName: GymRank.INTERMEDIATE, badges: ["🔥 30-Day Streak"], metaValue: "1.85 x BW" },
+    { id: "u-2", username: "NippardFan99", score: 2.3, rankName: GymRank.ADVANCED, badges: ["Science Master"], metaValue: "2.30 x BW" },
+    { id: "u-12", username: "ElijahMundyFan", score: 2.1, rankName: GymRank.ADVANCED, badges: ["Lightning Reps"], metaValue: "2.10 x BW" },
+    { id: "user-self", username: "ScienceLifter (You)", score: 1.85, rankName: GymRank.INTERMEDIATE, badges: ["30-Day Streak"], metaValue: "1.85 x BW" },
     { id: "u-5", username: "GravityDefier", score: 1.6, rankName: GymRank.INTERMEDIATE, badges: [], metaValue: "1.60 x BW" }
   ],
   progress: [
-    { id: "u-6", username: "NoviceGains99", score: 22, rankName: GymRank.INTERMEDIATE, badges: ["📈 Most Improved"], metaValue: "+22% in 30d" },
-    { id: "user-self", username: "ScienceLifter (You)", score: 14.5, rankName: GymRank.INTERMEDIATE, badges: ["🔥 30-Day Streak"], metaValue: "+14.5% in 30d" },
-    { id: "u-3", username: "KeenanDisciple", score: 8.2, rankName: GymRank.ADVANCED, badges: ["💪 Chest Champ"], metaValue: "+8.2% in 30d" },
-    { id: "u-1", username: "DorianDread", score: 1.5, rankName: GymRank.ELITE, badges: ["🏆 Top 1% Bench"], metaValue: "+1.5% in 30d" }
+    { id: "u-6", username: "NoviceGains99", score: 22, rankName: GymRank.INTERMEDIATE, badges: ["Most Improved"], metaValue: "+22% in 30d" },
+    { id: "user-self", username: "ScienceLifter (You)", score: 14.5, rankName: GymRank.INTERMEDIATE, badges: ["30-Day Streak"], metaValue: "+14.5% in 30d" },
+    { id: "u-3", username: "KeenanDisciple", score: 8.2, rankName: GymRank.ADVANCED, badges: ["Chest Champ"], metaValue: "+8.2% in 30d" },
+    { id: "u-1", username: "DorianDread", score: 1.5, rankName: GymRank.ELITE, badges: ["Top 1% Bench"], metaValue: "+1.5% in 30d" }
   ],
   consistency: [
-    { id: "user-self", username: "ScienceLifter (You)", score: 100, rankName: GymRank.INTERMEDIATE, badges: ["🔥 30-Day Streak"], metaValue: "100% (24/24 Sessions)" },
-    { id: "u-7", username: "ClockworkUser", score: 100, rankName: GymRank.ADVANCED, badges: ["🔥 100% Adherence"], metaValue: "100% (24/24 Sessions)" },
-    { id: "u-2", username: "NippardFan99", score: 95.8, rankName: GymRank.ADVANCED, badges: ["🧠 Science Master"], metaValue: "95.8% (23/24 Sessions)" },
+    { id: "user-self", username: "ScienceLifter (You)", score: 100, rankName: GymRank.INTERMEDIATE, badges: ["30-Day Streak"], metaValue: "100% (24/24 Sessions)" },
+    { id: "u-7", username: "ClockworkUser", score: 100, rankName: GymRank.ADVANCED, badges: ["100% Adherence"], metaValue: "100% (24/24 Sessions)" },
+    { id: "u-2", username: "NippardFan99", score: 95.8, rankName: GymRank.ADVANCED, badges: ["Science Master"], metaValue: "95.8% (23/24 Sessions)" },
     { id: "u-8", username: "BusyDadLifting", score: 83.3, rankName: GymRank.INTERMEDIATE, badges: [], metaValue: "83.3% (20/24 Sessions)" }
   ],
   science: [
-    { id: "u-7", username: "ClockworkUser", score: 96, rankName: GymRank.ADVANCED, badges: ["🔥 100% Adherence"], metaValue: "96 pts" },
-    { id: "u-2", username: "NippardFan99", score: 95, rankName: GymRank.ADVANCED, badges: ["🧠 Science Master"], metaValue: "95 pts" },
-    { id: "user-self", username: "ScienceLifter (You)", score: 88, rankName: GymRank.INTERMEDIATE, badges: ["🔥 30-Day Streak"], metaValue: "88 pts" },
+    { id: "u-7", username: "ClockworkUser", score: 96, rankName: GymRank.ADVANCED, badges: ["100% Adherence"], metaValue: "96 pts" },
+    { id: "u-2", username: "NippardFan99", score: 95, rankName: GymRank.ADVANCED, badges: ["Science Master"], metaValue: "95 pts" },
+    { id: "user-self", username: "ScienceLifter (You)", score: 88, rankName: GymRank.INTERMEDIATE, badges: ["30-Day Streak"], metaValue: "88 pts" },
     { id: "u-9", username: "RIR_Enforcer", score: 85, rankName: GymRank.INTERMEDIATE, badges: [], metaValue: "85 pts" }
   ]
 };

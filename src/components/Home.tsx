@@ -1,7 +1,7 @@
 import React from "react";
 import { WorkoutSession, EloProfile } from "../types";
 import { EXERCISE_DATABASE } from "../data";
-import { SlidersHorizontal, Plus, Flame } from "lucide-react";
+import { SlidersHorizontal, Flame, CircleUser, Trophy } from "lucide-react";
 
 interface HomeProps {
   sessions: WorkoutSession[];
@@ -106,17 +106,9 @@ export default function Home({ sessions, userElo, onNavigate }: HomeProps) {
       {/* Header */}
       <div className="flex items-center justify-between pt-2 pb-6">
         <h1 className="text-4xl font-extrabold tracking-tight text-white">Workouts</h1>
-        <div className="flex items-center gap-2.5">
-          <button className="w-11 h-11 rounded-full bg-neutral-800/80 flex items-center justify-center text-neutral-300 active:scale-95 transition-transform">
-            <SlidersHorizontal className="w-[18px] h-[18px]" />
-          </button>
-          <button
-            onClick={() => onNavigate("logger")}
-            className="w-11 h-11 rounded-full bg-neutral-800/80 flex items-center justify-center text-neutral-300 active:scale-95 transition-transform"
-          >
-            <Plus className="w-5 h-5" />
-          </button>
-        </div>
+        <button className="w-11 h-11 rounded-full bg-neutral-800/80 flex items-center justify-center text-neutral-300 active:scale-95 transition-transform">
+          <CircleUser className="w-6 h-6" />
+        </button>
       </div>
 
       {/* Top row: routine ring + big-number stat */}
@@ -218,19 +210,20 @@ export default function Home({ sessions, userElo, onNavigate }: HomeProps) {
 
       {/* Streak + start new */}
       <div className="grid grid-cols-2 gap-3.5 mt-3.5">
-        <div className="bg-neutral-900 rounded-3xl p-5 flex flex-col justify-between h-[120px]">
-          <Flame className="w-6 h-6 text-amber-500 fill-amber-500" />
-          <div>
+        <div className="bg-neutral-900 rounded-3xl p-5 flex flex-col justify-end h-[120px]">
+          <div className="flex items-center gap-2">
             <span className="text-3xl font-extrabold tracking-tight text-white">30</span>
-            <p className="text-xs text-neutral-500 mt-0.5">Day streak</p>
+            <Flame className="w-6 h-6 text-amber-500 fill-amber-500" />
           </div>
+          <p className="text-xs text-neutral-500 mt-0.5">Day streak</p>
         </div>
-        <button
-          onClick={() => onNavigate("logger")}
-          className="bg-neutral-900/60 border border-dashed border-neutral-700 rounded-3xl flex items-center justify-center h-[120px] text-neutral-500 hover:text-violet-400 hover:border-violet-500/50 active:scale-[0.98] transition-all"
-        >
-          <Plus className="w-8 h-8" />
-        </button>
+        <div className="bg-neutral-900 rounded-3xl p-5 flex flex-col justify-end h-[120px]">
+          <div className="flex items-center gap-2">
+            <span className="text-3xl font-extrabold tracking-tight text-white">{userElo.lifetimeElo}</span>
+            <Trophy className="w-5 h-5 text-violet-400" />
+          </div>
+          <p className="text-xs text-neutral-500 mt-0.5">ELO rating</p>
+        </div>
       </div>
     </div>
   );

@@ -2,7 +2,7 @@
 
 **The operating system for evidence-based lifting.**
 
-Track workouts, learn the science, compete through meaningful progression, and receive personalized coaching powered by data—not gym myths.
+Track workouts, learn the science, compete through meaningful progression, and get computed training insights powered by data—not gym myths.
 
 </div>
 
@@ -12,7 +12,7 @@ Track workouts, learn the science, compete through meaningful progression, and r
 
 Most fitness apps focus on recording workouts.
 
-Science-Based Lifting OS is designed to help users understand **why** they are training a certain way through evidence-based education, intelligent progression systems, and personalized coaching.
+Science-Based Lifting OS is designed to help users understand **why** they are training a certain way through evidence-based education, intelligent progression systems, and a deterministic insights engine.
 
 Our mission is to make science-based lifting accessible to everyone—from complete beginners to advanced lifters.
 
@@ -102,17 +102,17 @@ The goal is to reward smart training—not just genetics.
 
 ---
 
-### AI Coach
+### Insights
 
-Receive personalized insights based on:
+A fully computed analytics screen that surfaces:
 
-* Volume
-* Progression
-* Consistency
-* Training history
-* Performance trends
+* Weekly volume, sets, stimulus, and tonnage
+* Lifting score breakdown (strength, progress, consistency, science)
+* Weak-point detection against weekly volume targets
+* Per-muscle volume status (undertrained / optimal / overreaching)
+* Next-session progression targets
 
-The AI explains your data and helps you make better training decisions.
+Every number is calculated deterministically from your logged training—no AI, no black boxes.
 
 ---
 
@@ -120,7 +120,7 @@ The AI explains your data and helps you make better training decisions.
 
 The platform follows a simple principle:
 
-> Calculate with code. Explain with AI.
+> Calculate with code. No black boxes.
 
 ```
 Workout Data
@@ -129,9 +129,7 @@ Rules Engine
 ↓
 Metrics & Analytics
 ↓
-AI Coach
-↓
-Personalized Insights
+Insights Dashboard
 ```
 
 ### Rules Engine
@@ -145,18 +143,7 @@ Handles:
 * ELO updates
 * Leaderboard rankings
 
-### AI
-
-Handles:
-
-* Coaching explanations
-* Educational content
-* User questions
-* Personalized feedback
-
-AI is not responsible for training calculations.
-
-This keeps the platform:
+All training calculations run locally in the rules engine. This keeps the platform:
 
 * Cheaper
 * Faster
@@ -179,10 +166,6 @@ This keeps the platform:
 
 * PostgreSQL
 
-### AI
-
-* GPT-5 Mini
-
 ---
 
 ## MVP Scope
@@ -196,7 +179,7 @@ This keeps the platform:
 * Science Feed
 * Basic ELO System
 * Leaderboards
-* AI Workout Reviews
+* Computed Insights Dashboard
 
 ### Planned
 
@@ -219,7 +202,7 @@ Science-Based Lifting OS focuses on:
 * Strong fundamentals
 * Simple architecture
 * Data-driven decisions
-* AI only where it adds value
+* Deterministic, on-device calculations
 
 Build what matters first.
 
@@ -239,18 +222,6 @@ Install dependencies:
 
 ```bash
 npm install
-```
-
-Create a local environment file:
-
-```
-.env.local
-```
-
-Add your API key:
-
-```
-GEMINI_API_KEY=your_api_key_here
 ```
 
 Run the development server:

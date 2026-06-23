@@ -1,25 +1,89 @@
 import React, { useState } from "react";
 import { WorkoutSession, WorkoutExercise, TrainingSet, Exercise } from "../types";
-import { EXERCISE_DATABASE } from "../data";
+import { EXERCISE_DATABASE, getExerciseName } from "../data";
 import { calculateStimulusScore, calculateEffectiveReps, calculateEstimated1RM, getProgressionRecommendation } from "../utils";
-import { Plus, Trash2, Save, Calendar, Clock, Dumbbell, Sparkles, CheckCircle2, History, RotateCcw } from "lucide-react";
+import { Plus, Trash2, Save, Calendar, Clock, Dumbbell, Sparkles, CheckCircle2, History, RotateCcw, ChevronDown } from "lucide-react";
 
 interface WorkoutLoggerProps {
   sessions: WorkoutSession[];
   onSaveSession: (session: WorkoutSession) => void;
 }
 
+// Typeable exercise picker: autocompletes known lifts and accepts custom free-text entries
+function ExerciseCombobox({ value, onChange }: { value: string; onChange: (id: string) => void }) {
+  const [text, setText] = useState(getExerciseName(value));
+  const [open, setOpen] = useState(false);
+
+  React.useEffect(() => {
+    setText(getExerciseName(value));
+  }, [value]);
+
+  const query = text.trim().toLowerCase();
+  const matches = EXERCISE_DATABASE.filter((e) => e.name.toLowerCase().includes(query)).slice(0, 6);
+
+  const commit = (raw: string) => {
+    const t = raw.trim();
+    const exact = EXERCISE_DATABASE.find((e) => e.name.toLowerCase() === t.toLowerCase());
+    if (exact) onChange(exact.id);
+    else if (t) onChange(`custom:${t}`);
+    setOpen(false);
+  };
+
+  return (
+    <div className="relative">
+      <input
+        value={text}
+        onChange={(e) => {
+          setText(e.target.value);
+          setOpen(true);
+        }}
+        onFocus={() => setOpen(true)}
+        onBlur={() => setTimeout(() => commit(text), 120)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") e.currentTarget.blur();
+        }}
+        type="text"
+        placeholder="Type an exercise (e.g. Barbell Squat)"
+        className="w-full bg-neutral-900 border border-neutral-800 rounded-lg px-3 py-2 text-sm text-white font-semibold focus:outline-none focus:border-violet-500"
+      />
+      {open && matches.length > 0 && (
+        <div className="absolute z-20 mt-1 w-full max-h-56 overflow-y-auto bg-neutral-900 border border-neutral-800 rounded-lg shadow-xl no-scrollbar">
+          {matches.map((ex) => (
+            <button
+              key={ex.id}
+              type="button"
+              onMouseDown={(e) => {
+                e.preventDefault();
+                onChange(ex.id);
+                setText(ex.name);
+                setOpen(false);
+              }}
+              className="w-full text-left px-3 py-2 text-xs text-neutral-200 hover:bg-violet-500/10 hover:text-violet-300 transition-colors"
+            >
+              {ex.name}
+              <span className="block text-[10px] text-neutral-500 font-mono">{ex.primaryMuscles.join(", ")}</span>
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function WorkoutLogger({ sessions, onSaveSession }: WorkoutLoggerProps) {
   // Session form state
   const [sessionName, setSessionName] = useState<string>("Evidence-Based Session");
   const [sessionNotes, setSessionNotes] = useState<string>("");
+  const [showNotesInput, setShowNotesInput] = useState<boolean>(false);
+  const [draftNotes, setDraftNotes] = useState<string>("");
+  const [archivesOpen, setArchivesOpen] = useState<boolean>(true);
   const [duration, setDuration] = useState<number>(45);
   const [logs, setLogs] = useState<WorkoutExercise[]>([
     {
       id: "we-active-1",
       exerciseId: "ex-bench-press",
       sets: [
-        { id: "set-active-1-1", weight: 80, reps: 10, rir: 2, restTime: 120 }
+        { id: "set-active-1-1", weight: 0, reps: 0, rir: 2, restTime: 0 }
       ]
     }
   ]);
@@ -37,7 +101,7 @@ export default function WorkoutLogger({ sessions, onSaveSession }: WorkoutLogger
       {
         id: nextId,
         exerciseId: EXERCISE_DATABASE[0].id,
-        sets: [{ id: `set-active-${nextId}-1`, weight: 60, reps: 10, rir: 2, restTime: 90 }]
+        sets: [{ id: `set-active-${nextId}-1`, weight: 0, reps: 0, rir: 2, restTime: 0 }]
       }
     ]);
   };
@@ -101,12 +165,14 @@ export default function WorkoutLogger({ sessions, onSaveSession }: WorkoutLogger
   const resetLogger = () => {
     setSessionName("Evidence-Based Session");
     setSessionNotes("");
+    setShowNotesInput(false);
+    setDraftNotes("");
     setDuration(45);
     setLogs([
       {
         id: "we-active-1",
         exerciseId: "ex-bench-press",
-        sets: [{ id: "set-active-1-1", weight: 80, reps: 10, rir: 2, restTime: 120 }]
+        sets: [{ id: "set-active-1-1", weight: 0, reps: 0, rir: 2, restTime: 0 }]
       }
     ]);
   };
@@ -152,7 +218,7 @@ export default function WorkoutLogger({ sessions, onSaveSession }: WorkoutLogger
             <div>
               <h2 className="text-xl font-bold text-white tracking-tight flex items-center gap-2">
                 <Dumbbell className="w-5 h-5 text-violet-400" />
-                Live Science Gym Session
+                Gym Session
               </h2>
               <p className="text-xs text-neutral-400">
                 Log weight and reps. Adjust Reps In Reserve (RIR) to calculate dynamic tension metrics.
@@ -177,7 +243,7 @@ export default function WorkoutLogger({ sessions, onSaveSession }: WorkoutLogger
           </div>
 
           {/* Metadata Section */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6 pb-6 border-b border-neutral-800">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 pb-6 border-b border-neutral-800">
             <div>
               <label className="block text-[10px] font-mono text-neutral-500 uppercase mb-1">Session Protocol Name</label>
               <input 
@@ -197,14 +263,6 @@ export default function WorkoutLogger({ sessions, onSaveSession }: WorkoutLogger
                 className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-violet-500/70"
               />
             </div>
-            <div>
-              <label className="block text-[10px] font-mono text-neutral-500 uppercase mb-1">Target Intensity Focus</label>
-              <select className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3 py-2 text-sm text-neutral-300 focus:outline-none focus:border-violet-500/70">
-                <option>Myofibrillar Hypertrophy (6-12 Reps)</option>
-                <option>Absolute Strength (3-5 Reps)</option>
-                <option>Sarcoplasmic / Metabolic Max (15+ Reps)</option>
-              </select>
-            </div>
           </div>
 
           {/* Active Exercises List */}
@@ -219,15 +277,10 @@ export default function WorkoutLogger({ sessions, onSaveSession }: WorkoutLogger
                 <div key={log.id} className="bg-neutral-950/70 border border-neutral-800 rounded-xl p-4 space-y-4">
                   <div className="flex justify-between items-center gap-4">
                     <div className="flex-1 max-w-sm">
-                      <select 
+                      <ExerciseCombobox
                         value={log.exerciseId}
-                        onChange={(e) => handleExerciseChange(log.id, e.target.value)}
-                        className="w-full bg-neutral-900 border border-neutral-800 rounded-lg px-3 py-1.5 text-xs text-white font-semibold focus:outline-none focus:border-violet-500"
-                      >
-                        {EXERCISE_DATABASE.map(ex => (
-                          <option key={ex.id} value={ex.id}>{ex.name}</option>
-                        ))}
-                      </select>
+                        onChange={(id) => handleExerciseChange(log.id, id)}
+                      />
                     </div>
                     <button 
                       onClick={() => removeExercise(log.id)}
@@ -256,7 +309,6 @@ export default function WorkoutLogger({ sessions, onSaveSession }: WorkoutLogger
                     {log.sets.map((set, setIdx) => {
                       const estimated1RMVal = calculateEstimated1RM(set.weight, set.reps);
                       const stimulusVal = calculateStimulusScore(set.rir, set.reps);
-                      const effectiveRepsVal = calculateEffectiveReps(set.rir, set.reps);
 
                       return (
                         <div key={set.id} className="bg-neutral-900 border border-neutral-800 rounded-xl p-3">
@@ -278,7 +330,7 @@ export default function WorkoutLogger({ sessions, onSaveSession }: WorkoutLogger
                               <input
                                 type="number"
                                 inputMode="decimal"
-                                value={set.weight}
+                                value={set.weight || ""}
                                 onChange={(e) => updateSetField(log.id, set.id, "weight", parseFloat(e.target.value) || 0)}
                                 className="w-full bg-neutral-950 border border-neutral-800 rounded-lg py-2 px-1 text-sm text-white text-center font-mono focus:outline-none focus:border-violet-500"
                               />
@@ -288,7 +340,7 @@ export default function WorkoutLogger({ sessions, onSaveSession }: WorkoutLogger
                               <input
                                 type="number"
                                 inputMode="numeric"
-                                value={set.reps}
+                                value={set.reps || ""}
                                 onChange={(e) => updateSetField(log.id, set.id, "reps", parseInt(e.target.value) || 0)}
                                 className="w-full bg-neutral-950 border border-neutral-800 rounded-lg py-2 px-1 text-sm text-white text-center font-mono focus:outline-none focus:border-violet-500"
                               />
@@ -313,18 +365,20 @@ export default function WorkoutLogger({ sessions, onSaveSession }: WorkoutLogger
                               <input
                                 type="number"
                                 inputMode="numeric"
-                                value={set.restTime}
+                                value={set.restTime || ""}
+                                placeholder="sec"
                                 onChange={(e) => updateSetField(log.id, set.id, "restTime", parseInt(e.target.value) || 0)}
-                                className="w-full bg-neutral-950 border border-neutral-800 rounded-lg py-2 px-1 text-sm text-white text-center font-mono focus:outline-none focus:border-violet-500"
+                                className="w-full bg-neutral-950 border border-neutral-800 rounded-lg py-2 px-1 text-sm text-white text-center font-mono placeholder:text-neutral-600 focus:outline-none focus:border-violet-500"
                               />
                             </div>
                           </div>
 
-                          <div className="flex items-center gap-3 mt-2.5 text-[10px] font-mono">
-                            <span className="text-violet-400 font-bold">STIM {stimulusVal}</span>
-                            <span className="text-emerald-400">EFF {effectiveRepsVal}</span>
-                            <span className="text-neutral-400">1RM {estimated1RMVal}kg</span>
-                          </div>
+                          {set.weight > 0 && set.reps > 0 && (
+                            <div className="flex items-center gap-3 mt-2.5 text-[10px] font-mono">
+                              <span className="text-violet-400 font-bold">STIM {stimulusVal}</span>
+                              <span className="text-neutral-400">1RM {estimated1RMVal}kg</span>
+                            </div>
+                          )}
                         </div>
                       );
                     })}
@@ -334,7 +388,7 @@ export default function WorkoutLogger({ sessions, onSaveSession }: WorkoutLogger
                     onClick={() => addSetToExercise(log.id)}
                     className="w-full py-1.5 bg-neutral-900 hover:bg-neutral-800 text-[11px] text-neutral-300 font-mono rounded-lg border border-neutral-800 flex items-center justify-center gap-1.5 transition-all"
                   >
-                    <Plus className="w-3.5 h-3.5" /> Add Performance Set
+                    <Plus className="w-3.5 h-3.5" /> Add Set
                   </button>
                 </div>
               );
@@ -345,31 +399,72 @@ export default function WorkoutLogger({ sessions, onSaveSession }: WorkoutLogger
             onClick={addNewExercise}
             className="w-full py-3 bg-neutral-950 hover:bg-neutral-900 border border-dashed border-neutral-800 hover:border-violet-500/40 text-xs text-neutral-400 hover:text-violet-400 font-sans rounded-xl mt-6 flex items-center justify-center gap-2 transition-all cursor-pointer"
           >
-            <Plus className="w-4 h-4" /> Expand Custom Biological Lift
+            <Plus className="w-4 h-4" /> Add more
           </button>
         </div>
 
-        {/* Text Area for Notes */}
+        {/* Notes */}
         <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6">
-          <label className="block text-sm font-bold text-white mb-2">Subjective Bio-Feedback & Rest Notes</label>
-          <textarea 
-            value={sessionNotes}
-            onChange={(e) => setSessionNotes(e.target.value)}
-            rows={3}
-            placeholder="Record neural fatigue, joints soreness status, sleep state, or mind-muscle connection feedbacks..."
-            className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-violet-500/70 font-sans leading-relaxed"
-          />
+          <label className="block text-sm font-bold text-white mb-3 text-center">Notes</label>
+          {showNotesInput ? (
+            <div className="space-y-3">
+              <textarea
+                value={draftNotes}
+                onChange={(e) => setDraftNotes(e.target.value)}
+                rows={3}
+                autoFocus
+                placeholder="Write your notes here"
+                className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-violet-500/70 font-sans leading-relaxed"
+              />
+              <div className="flex justify-end gap-2">
+                <button
+                  onClick={() => { setDraftNotes(sessionNotes); setShowNotesInput(false); }}
+                  className="px-4 py-1.5 border border-neutral-700 hover:bg-neutral-800 text-neutral-300 rounded-xl text-xs font-semibold transition-all"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => { setSessionNotes(draftNotes); setShowNotesInput(false); }}
+                  className="px-4 py-1.5 bg-neutral-800 hover:bg-neutral-700 border border-neutral-700 text-neutral-100 rounded-xl text-xs font-semibold transition-all"
+                >
+                  Save
+                </button>
+              </div>
+            </div>
+          ) : sessionNotes ? (
+            <button
+              onClick={() => { setDraftNotes(sessionNotes); setShowNotesInput(true); }}
+              className="w-full text-left bg-neutral-950 border border-neutral-800 hover:border-neutral-700 rounded-xl px-4 py-3 text-sm text-neutral-300 leading-relaxed transition-all"
+            >
+              {sessionNotes}
+            </button>
+          ) : (
+            <button
+              onClick={() => { setDraftNotes(""); setShowNotesInput(true); }}
+              className="w-full py-3 bg-neutral-950 hover:bg-neutral-900 border border-dashed border-neutral-800 hover:border-violet-500/40 text-xs text-neutral-400 hover:text-violet-400 font-sans rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer"
+              title="Add notes"
+            >
+              <Plus className="w-4 h-4" />
+            </button>
+          )}
         </div>
       </div>
 
       {/* Completed Session Archives (Takes 1/3) */}
       <div className="space-y-6">
         <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6">
-          <h3 className="text-sm font-semibold tracking-wider font-mono text-neutral-300 uppercase mb-4 flex items-center gap-2">
-            <History className="w-4 h-4 text-violet-400" />
-            Session Archives
-          </h3>
+          <button
+            onClick={() => setArchivesOpen((v) => !v)}
+            className="w-full flex items-center justify-between mb-4 cursor-pointer"
+          >
+            <h3 className="text-sm font-semibold tracking-wider font-mono text-neutral-300 uppercase flex items-center gap-2">
+              <History className="w-4 h-4 text-violet-400" />
+              Session Archives
+            </h3>
+            <ChevronDown className={`w-4 h-4 text-neutral-500 transition-transform ${archivesOpen ? "" : "-rotate-90"}`} />
+          </button>
 
+          {archivesOpen && (
           <div className="space-y-4 max-h-[750px] overflow-y-auto pr-1">
             {sessions.length === 0 ? (
               <div className="text-center py-8 bg-neutral-950 rounded-xl border border-neutral-800">
@@ -405,14 +500,13 @@ export default function WorkoutLogger({ sessions, onSaveSession }: WorkoutLogger
                   {/* Summary lists */}
                   <div className="space-y-1 pt-2 border-t border-neutral-800/60">
                     {session.exercises.map((we, idx) => {
-                      const exerciseDef = EXERCISE_DATABASE.find(e => e.id === we.exerciseId);
                       const repsLogged = we.sets.filter(s => s.reps > 0);
                       const totalSets = repsLogged.length;
                       const maxWeight = Math.max(...repsLogged.map(s => s.weight), 0);
                       return (
                         <div key={we.id} className="flex justify-between text-[11px] font-mono text-neutral-400">
                           <span className="truncate max-w-[120px] text-neutral-200">
-                            {exerciseDef ? exerciseDef.name : "Exercise"}
+                            {getExerciseName(we.exerciseId)}
                           </span>
                           <span>
                             {totalSets} Sets × {maxWeight}kg Max
@@ -425,6 +519,7 @@ export default function WorkoutLogger({ sessions, onSaveSession }: WorkoutLogger
               ))
             )}
           </div>
+          )}
         </div>
       </div>
     </div>

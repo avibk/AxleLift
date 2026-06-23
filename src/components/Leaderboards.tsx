@@ -8,11 +8,11 @@ export default function Leaderboards() {
 
   // Rank specifications for the user help block
   const RANK_TIERS = [
-    { title: "Novice", eloRange: "0 - 1000", bg: "bg-neutral-800/40 text-neutral-400 border-neutral-700", symbol: "🥉" },
-    { title: "Intermediate", eloRange: "1000 - 1500", bg: "bg-violet-500/10 text-violet-450 border-violet-500/20", symbol: "🥈" },
-    { title: "Advanced", eloRange: "1500 - 2000", bg: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20", symbol: "🥇" },
-    { title: "Elite", eloRange: "2000 - 2500", bg: "bg-indigo-500/10 text-indigo-400 border-indigo-500/20", symbol: "💎" },
-    { title: "Evidence-Based Monster", eloRange: "2500+", bg: "bg-amber-500/10 text-amber-400 border-amber-500/20", symbol: "👑" }
+    { title: "Novice", eloRange: "0 - 1000", bg: "bg-neutral-800/40 text-neutral-400 border-neutral-700" },
+    { title: "Intermediate", eloRange: "1000 - 1500", bg: "bg-violet-500/10 text-violet-450 border-violet-500/20" },
+    { title: "Advanced", eloRange: "1500 - 2000", bg: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" },
+    { title: "Elite", eloRange: "2000 - 2500", bg: "bg-indigo-500/10 text-indigo-400 border-indigo-500/20" },
+    { title: "Evidence-Based Monster", eloRange: "2500+", bg: "bg-amber-500/10 text-amber-400 border-amber-500/20" }
   ];
 
   const getSubTitleText = () => {
@@ -50,13 +50,13 @@ export default function Leaderboards() {
           <div className="flex flex-wrap items-center gap-4 mt-6 pt-4 border-t border-neutral-800/80">
             <span className="text-[10px] text-neutral-500 font-mono uppercase">Seasonal Badges:</span>
             <span className="px-2 py-1 bg-violet-500/5 text-violet-400 text-[10px] font-mono font-bold rounded-lg border border-violet-500/20 flex items-center gap-1">
-              🏆 Top 1% Bench
+              Top 1% Bench
             </span>
             <span className="px-2 py-1 bg-emerald-500/5 text-emerald-400 text-[10px] font-mono font-bold rounded-lg border border-emerald-500/20 flex items-center gap-1">
-              🧠 Science Master
+              Science Master
             </span>
             <span className="px-2 py-1 bg-amber-500/5 text-amber-500 text-[10px] font-mono font-bold rounded-lg border border-amber-500/20 flex items-center gap-1">
-              🔥 30-Day Streak
+              30-Day Streak
             </span>
           </div>
         </div>
@@ -70,8 +70,7 @@ export default function Leaderboards() {
           <div className="space-y-2">
             {RANK_TIERS.map((tier) => (
               <div key={tier.title} className={`flex items-center justify-between p-2 rounded-xl border text-[10px] ${tier.bg}`}>
-                <span className="font-bold flex items-center gap-1">
-                  <span>{tier.symbol}</span>
+                <span className="font-bold">
                   {tier.title}
                 </span>
                 <span className="font-mono">{tier.eloRange} Elo</span>
@@ -190,15 +189,15 @@ export default function Leaderboards() {
               </div>
               <div>
                 <span className="text-[9px] font-mono text-neutral-500 block uppercase">BENCH OVERLOAD CHAMP</span>
-                <span className="text-xs font-semibold text-neutral-300">👑 {fame.benchChamp}</span>
+                <span className="text-xs font-semibold text-neutral-300">{fame.benchChamp}</span>
               </div>
               <div>
                 <span className="text-[9px] font-mono text-neutral-500 block uppercase">LIFTING SCIENCE CHAMP</span>
-                <span className="text-xs font-semibold text-neutral-300">🧠 {fame.scienceChamp}</span>
+                <span className="text-xs font-semibold text-neutral-300">{fame.scienceChamp}</span>
               </div>
               <div>
                 <span className="text-[9px] font-mono text-neutral-500 block uppercase">CONSISTENCY CHAMP</span>
-                <span className="text-xs font-semibold text-neutral-300">🔥 {fame.consistencyChamp}</span>
+                <span className="text-xs font-semibold text-neutral-300">{fame.consistencyChamp}</span>
               </div>
             </div>
           ))}

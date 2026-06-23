@@ -11,8 +11,8 @@ import { Activity, Dumbbell, BookOpen, Trophy, LayoutGrid, Signal, Wifi, Battery
 const NAV_ITEMS = [
   { id: "dashboard", label: "Home", Icon: LayoutGrid },
   { id: "logger", label: "Log", Icon: Dumbbell },
-  { id: "insights", label: "Insights", Icon: Activity },
   { id: "leaderboards", label: "Ranks", Icon: Trophy },
+  { id: "insights", label: "Insights", Icon: Activity },
   { id: "feed", label: "Feed", Icon: BookOpen },
 ] as const;
 
