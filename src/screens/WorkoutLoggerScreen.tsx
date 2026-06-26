@@ -3,6 +3,7 @@ import { WorkoutSession, WorkoutExercise, TrainingSet } from "../types";
 import { EXERCISE_DATABASE, getExerciseName } from "../utils/mockData";
 import { calculateStimulusScore, calculateEffectiveReps, calculateEstimated1RM, getProgressionRecommendation } from "../utils/workoutMetrics";
 import { Plus, Trash2, Save, Calendar, Clock, Dumbbell, Sparkles, CheckCircle2, History, RotateCcw, ChevronDown } from "lucide-react";
+import { Modal } from "../components/ui/Modal";
 
 interface WorkoutLoggerProps {
   sessions: WorkoutSession[];
@@ -74,9 +75,9 @@ export default function WorkoutLoggerScreen({ sessions, onSaveSession }: Workout
   // Session form state
   const [sessionName, setSessionName] = useState<string>("Evidence-Based Session");
   const [sessionNotes, setSessionNotes] = useState<string>("");
-  const [showNotesInput, setShowNotesInput] = useState<boolean>(false);
   const [draftNotes, setDraftNotes] = useState<string>("");
-  const [archivesOpen, setArchivesOpen] = useState<boolean>(true);
+  const [archivesOpen, setArchivesOpen] = useState<boolean>(false);
+  const [notesModalOpen, setNotesModalOpen] = useState<boolean>(false);
   const [duration, setDuration] = useState<number>(45);
   const [logs, setLogs] = useState<WorkoutExercise[]>([
     {
@@ -165,7 +166,7 @@ export default function WorkoutLoggerScreen({ sessions, onSaveSession }: Workout
   const resetLogger = () => {
     setSessionName("Evidence-Based Session");
     setSessionNotes("");
-    setShowNotesInput(false);
+    setNotesModalOpen(false);
     setDraftNotes("");
     setDuration(45);
     setLogs([
@@ -284,7 +285,7 @@ export default function WorkoutLoggerScreen({ sessions, onSaveSession }: Workout
                     </div>
                     <button 
                       onClick={() => removeExercise(log.id)}
-                      className="p-1.5 hover:bg-rose-500/10 text-neutral-500 hover:text-rose-400 rounded-md transition-all"
+                      className="p-1.5 hover:bg-violet-500/10 text-neutral-500 hover:text-violet-400 rounded-md transition-all"
                       title="Remove exercise"
                     >
                       <Trash2 className="w-4 h-4" />
@@ -316,7 +317,7 @@ export default function WorkoutLoggerScreen({ sessions, onSaveSession }: Workout
                             <span className="text-xs font-bold text-white font-mono">Set {setIdx + 1}</span>
                             <button
                               onClick={() => removeSetFromExercise(log.id, set.id)}
-                              className="text-neutral-500 hover:text-rose-400 disabled:opacity-30 p-1"
+                              className="text-neutral-500 hover:text-violet-400 disabled:opacity-30 p-1"
                               disabled={log.sets.length <= 1}
                               title="Delete set"
                             >
@@ -406,48 +407,52 @@ export default function WorkoutLoggerScreen({ sessions, onSaveSession }: Workout
         {/* Notes */}
         <div className="rounded-lg border border-neutral-800 bg-neutral-900 p-5">
           <label className="block text-sm font-bold text-white mb-3 text-center">Notes</label>
-          {showNotesInput ? (
-            <div className="space-y-3">
-              <textarea
-                value={draftNotes}
-                onChange={(e) => setDraftNotes(e.target.value)}
-                rows={3}
-                autoFocus
-                placeholder="Write your notes here"
-                className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-violet-500/70 font-sans leading-relaxed"
-              />
-              <div className="flex justify-end gap-2">
-                <button
-                  onClick={() => { setDraftNotes(sessionNotes); setShowNotesInput(false); }}
-                  className="px-4 py-1.5 border border-neutral-700 hover:bg-neutral-800 text-neutral-300 rounded-xl text-xs font-semibold transition-all"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={() => { setSessionNotes(draftNotes); setShowNotesInput(false); }}
-                  className="px-4 py-1.5 bg-neutral-800 hover:bg-neutral-700 border border-neutral-700 text-neutral-100 rounded-xl text-xs font-semibold transition-all"
-                >
-                  Save
-                </button>
-              </div>
-            </div>
-          ) : sessionNotes ? (
+          {sessionNotes ? (
             <button
-              onClick={() => { setDraftNotes(sessionNotes); setShowNotesInput(true); }}
+              onClick={() => { setDraftNotes(sessionNotes); setNotesModalOpen(true); }}
               className="w-full text-left bg-neutral-950 border border-neutral-800 hover:border-neutral-700 rounded-xl px-4 py-3 text-sm text-neutral-300 leading-relaxed transition-all"
             >
               {sessionNotes}
             </button>
           ) : (
             <button
-              onClick={() => { setDraftNotes(""); setShowNotesInput(true); }}
+              onClick={() => { setDraftNotes(""); setNotesModalOpen(true); }}
               className="w-full py-3 bg-neutral-950 hover:bg-neutral-900 border border-dashed border-neutral-800 hover:border-violet-500/40 text-xs text-neutral-400 hover:text-violet-400 font-sans rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer"
               title="Add notes"
             >
-              <Plus className="w-4 h-4" />
+              <Plus className="w-4 h-4" /> Add notes
             </button>
           )}
         </div>
+
+        <Modal
+          isOpen={notesModalOpen}
+          onClose={() => { setDraftNotes(sessionNotes); setNotesModalOpen(false); }}
+          title="Session Notes"
+        >
+          <textarea
+            value={draftNotes}
+            onChange={(e) => setDraftNotes(e.target.value)}
+            rows={4}
+            autoFocus
+            placeholder="Write your notes here"
+            className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-violet-500/70 font-sans leading-relaxed mb-4"
+          />
+          <div className="flex justify-end gap-2">
+            <button
+              onClick={() => { setDraftNotes(sessionNotes); setNotesModalOpen(false); }}
+              className="px-4 py-1.5 border border-neutral-700 hover:bg-neutral-800 text-neutral-300 rounded-xl text-xs font-semibold transition-all"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={() => { setSessionNotes(draftNotes); setNotesModalOpen(false); }}
+              className="px-4 py-1.5 bg-neutral-800 hover:bg-neutral-700 border border-neutral-700 text-neutral-100 rounded-xl text-xs font-semibold transition-all"
+            >
+              Save
+            </button>
+          </div>
+        </Modal>
       </div>
 
       {/* Completed Session Archives (Takes 1/3) */}

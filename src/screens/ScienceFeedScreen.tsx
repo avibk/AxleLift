@@ -92,8 +92,8 @@ export default function ScienceFeedScreen() {
                 </h3>
 
                 {/* Gym-Bro Myth Section */}
-                <div className="bg-rose-500/5 border border-rose-500/10 p-3.5 rounded-xl space-y-1">
-                  <div className="flex items-center gap-1.5 text-rose-400 text-[10px] font-mono font-bold uppercase">
+                <div className="bg-violet-500/5 border border-violet-500/10 p-3.5 rounded-xl space-y-1">
+                  <div className="flex items-center gap-1.5 text-violet-400 text-[10px] font-mono font-bold uppercase">
                     <AlertCircle className="w-3.5 h-3.5" />
                     Popular Gym Bro Myth
                   </div>

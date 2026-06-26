@@ -25,16 +25,16 @@ const KG_TO_LBS = 2.20462;
 const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
 
 const STATUS_BAR: Record<string, string> = {
-  Undertrained: "bg-amber-400",
-  Optimal: "bg-emerald-400",
-  Overreaching: "bg-rose-400",
+  Undertrained: "bg-violet-500",
+  Optimal: "bg-violet-400",
+  Overreaching: "bg-violet-300",
 };
 
 const REC_STYLE: Record<string, { Icon: any; text: string; bg: string; border: string }> = {
-  increase_weight: { Icon: ArrowUp, text: "text-emerald-400", bg: "bg-emerald-500/5", border: "border-emerald-500/20" },
+  increase_weight: { Icon: ArrowUp, text: "text-violet-400", bg: "bg-violet-500/5", border: "border-violet-500/20" },
   increase_reps: { Icon: TrendingUp, text: "text-violet-400", bg: "bg-violet-500/5", border: "border-violet-500/20" },
   maintain: { Icon: Minus, text: "text-neutral-300", bg: "bg-neutral-800/40", border: "border-neutral-700" },
-  deload: { Icon: RotateCcw, text: "text-amber-400", bg: "bg-amber-500/5", border: "border-amber-500/20" },
+  deload: { Icon: RotateCcw, text: "text-violet-400", bg: "bg-violet-500/5", border: "border-violet-500/20" },
 };
 
 export default function InsightsScreen({ sessions, userElo }: InsightsProps) {
@@ -143,8 +143,8 @@ export default function InsightsScreen({ sessions, userElo }: InsightsProps) {
 
       {/* Weak point callout */}
       {weakPoints.length > 0 && (
-        <div className="mt-3 bg-amber-500/5 border border-amber-500/20 rounded-lg p-4 flex gap-3">
-          <AlertTriangle className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
+        <div className="mt-3 bg-violet-500/5 border border-violet-500/20 rounded-lg p-4 flex gap-3">
+          <AlertTriangle className="w-5 h-5 text-violet-400 flex-shrink-0 mt-0.5" />
           <div>
             <p className="text-sm font-bold text-white">Focus this week</p>
             <p className="text-xs text-neutral-300 mt-1 leading-relaxed">
@@ -187,13 +187,13 @@ export default function InsightsScreen({ sessions, userElo }: InsightsProps) {
         </div>
         <div className="flex items-center gap-4 mt-4 pt-3 border-t border-neutral-800/70">
           <span className="flex items-center gap-1.5 text-[10px] text-neutral-400">
-            <span className="w-2 h-2 rounded-full bg-amber-400" /> Under
+            <span className="w-2 h-2 rounded-full bg-violet-500" /> Under
           </span>
           <span className="flex items-center gap-1.5 text-[10px] text-neutral-400">
-            <span className="w-2 h-2 rounded-full bg-emerald-400" /> Optimal
+            <span className="w-2 h-2 rounded-full bg-violet-400" /> Optimal
           </span>
           <span className="flex items-center gap-1.5 text-[10px] text-neutral-400">
-            <span className="w-2 h-2 rounded-full bg-rose-400" /> Over
+            <span className="w-2 h-2 rounded-full bg-violet-300" /> Over
           </span>
         </div>
       </div>

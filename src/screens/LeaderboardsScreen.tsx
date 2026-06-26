@@ -10,9 +10,9 @@ export default function LeaderboardsScreen() {
   const RANK_TIERS = [
     { title: "Novice", eloRange: "0 - 1000", bg: "bg-neutral-800/40 text-neutral-400 border-neutral-700" },
     { title: "Intermediate", eloRange: "1000 - 1500", bg: "bg-violet-500/10 text-violet-400 border-violet-500/20" },
-    { title: "Advanced", eloRange: "1500 - 2000", bg: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" },
-    { title: "Elite", eloRange: "2000 - 2500", bg: "bg-indigo-500/10 text-indigo-400 border-indigo-500/20" },
-    { title: "Evidence-Based Monster", eloRange: "2500+", bg: "bg-amber-500/10 text-amber-400 border-amber-500/20" }
+    { title: "Advanced", eloRange: "1500 - 2000", bg: "bg-violet-500/10 text-violet-400 border-violet-500/20" },
+    { title: "Elite", eloRange: "2000 - 2500", bg: "bg-violet-500/10 text-violet-400 border-violet-500/20" },
+    { title: "Evidence-Based Monster", eloRange: "2500+", bg: "bg-violet-500/10 text-violet-400 border-violet-500/20" }
   ];
 
   const getSubTitleText = () => {
@@ -50,10 +50,10 @@ export default function LeaderboardsScreen() {
             <span className="px-2 py-1 bg-violet-500/5 text-violet-400 text-[10px] font-mono font-bold rounded-lg border border-violet-500/20 flex items-center gap-1">
               Top 1% Bench
             </span>
-            <span className="px-2 py-1 bg-emerald-500/5 text-emerald-400 text-[10px] font-mono font-bold rounded-lg border border-emerald-500/20 flex items-center gap-1">
+            <span className="px-2 py-1 bg-violet-500/5 text-violet-400 text-[10px] font-mono font-bold rounded-lg border border-violet-500/20 flex items-center gap-1">
               Science Master
             </span>
-            <span className="px-2 py-1 bg-amber-500/5 text-amber-500 text-[10px] font-mono font-bold rounded-lg border border-amber-500/20 flex items-center gap-1">
+            <span className="px-2 py-1 bg-violet-500/5 text-violet-400 text-[10px] font-mono font-bold rounded-lg border border-violet-500/20 flex items-center gap-1">
               30-Day Streak
             </span>
           </div>
@@ -132,9 +132,9 @@ export default function LeaderboardsScreen() {
                     <div className="flex items-center gap-4">
                       {/* Medals */}
                       <span className="w-6 text-center font-mono font-bold text-neutral-400 text-xs">
-                        {idx === 0 && <Medal className="w-5 h-5 text-amber-400 mx-auto" />}
+                        {idx === 0 && <Medal className="w-5 h-5 text-violet-400 mx-auto" />}
                         {idx === 1 && <Medal className="w-5 h-5 text-neutral-400 mx-auto" />}
-                        {idx === 2 && <Medal className="w-5 h-5 text-amber-700 mx-auto" />}
+                        {idx === 2 && <Medal className="w-5 h-5 text-violet-500 mx-auto" />}
                         {idx >= 3 && `${idx + 1}`}
                       </span>
 
@@ -174,7 +174,7 @@ export default function LeaderboardsScreen() {
       {/* Hall of Fame section */}
       <section className="rounded-lg border border-neutral-800 bg-neutral-900 p-5">
         <h3 className="mb-4 flex items-center gap-2 text-base font-bold tracking-tight text-white">
-          <Star className="w-5 h-5 text-amber-500" />
+          <Star className="w-5 h-5 text-violet-500" />
           General Hall of Fame Registers
         </h3>
         

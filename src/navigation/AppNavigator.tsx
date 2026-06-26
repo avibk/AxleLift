@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BottomTabBar, AppTab } from "../components/features/BottomTabBar";
 import { StatusBar } from "../components/features/StatusBar";
 import { Loader } from "../components/ui/Loader";
+import { useScrollReset } from "../hooks/useScrollReset";
 import { useWorkoutSession } from "../hooks/useWorkoutSession";
 import HomeScreen from "../screens/HomeScreen";
 import InsightsScreen from "../screens/InsightsScreen";
@@ -33,13 +34,15 @@ export default function AppNavigator() {
   const [activeTab, setActiveTab] = useState<AppTab>("dashboard");
   const { sessions, userElo, saveSession, isReady } = useWorkoutSession();
   const clock = useStatusClock();
+  const mainRef = useRef<HTMLElement>(null);
+  useScrollReset(mainRef, [activeTab]);
 
   return (
     <div className="min-h-screen bg-black text-white">
       <div className="mx-auto flex h-screen w-full max-w-[430px] flex-col overflow-hidden bg-neutral-950 font-sans shadow-2xl md:my-4 md:h-[calc(100vh-2rem)] md:rounded-[36px] md:border md:border-neutral-800">
         <StatusBar clock={clock} />
 
-        <main className="flex-1 overflow-y-auto px-3 pb-8">
+        <main ref={mainRef} className="flex-1 overflow-y-auto px-3 pb-8">
           {!isReady ? (
             <Loader />
           ) : (

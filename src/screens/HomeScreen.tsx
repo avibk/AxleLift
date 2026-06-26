@@ -214,7 +214,7 @@ export default function HomeScreen({ sessions, userElo, onNavigate }: HomeScreen
         <div className="bg-neutral-900 rounded-lg p-5 flex flex-col justify-end h-[120px]">
           <div className="flex items-center gap-2">
             <span className="text-3xl font-extrabold tracking-tight text-white">30</span>
-            <Flame className="w-6 h-6 text-amber-500 fill-amber-500" />
+            <Flame className="w-6 h-6 text-violet-500 fill-violet-500" />
           </div>
           <p className="text-xs text-neutral-500 mt-0.5">Day streak</p>
         </div>
