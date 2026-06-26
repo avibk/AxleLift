@@ -1,15 +1,15 @@
-import React, { useState } from "react";
-import { MOCK_LEADERBOARDS, CURATED_HALL_OF_FAME } from "../data";
-import { GymRank } from "../types";
-import { Trophy, ShieldAlert, Award, Calendar, Flame, Brain, Dumbbell, Sparkles, TrendingUp, Medal, Star } from "lucide-react";
+import React from "react";
+import { CURATED_HALL_OF_FAME } from "../utils/mockData";
+import { useLeaderboard } from "../hooks/useLeaderboard";
+import { Trophy, Award, Calendar, Flame, Brain, Dumbbell, TrendingUp, Medal, Star } from "lucide-react";
 
-export default function Leaderboards() {
-  const [activeBoard, setActiveBoard] = useState<"bench" | "relative" | "progress" | "consistency" | "science">("bench");
+export default function LeaderboardsScreen() {
+  const { activeBoard, setActiveBoard, entries } = useLeaderboard("bench");
 
   // Rank specifications for the user help block
   const RANK_TIERS = [
     { title: "Novice", eloRange: "0 - 1000", bg: "bg-neutral-800/40 text-neutral-400 border-neutral-700" },
-    { title: "Intermediate", eloRange: "1000 - 1500", bg: "bg-violet-500/10 text-violet-450 border-violet-500/20" },
+    { title: "Intermediate", eloRange: "1000 - 1500", bg: "bg-violet-500/10 text-violet-400 border-violet-500/20" },
     { title: "Advanced", eloRange: "1500 - 2000", bg: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" },
     { title: "Elite", eloRange: "2000 - 2500", bg: "bg-indigo-500/10 text-indigo-400 border-indigo-500/20" },
     { title: "Evidence-Based Monster", eloRange: "2500+", bg: "bg-amber-500/10 text-amber-400 border-amber-500/20" }
@@ -26,13 +26,11 @@ export default function Leaderboards() {
   };
 
   return (
-    <div className="space-y-8 animate-fade-in">
+    <div className="space-y-5 animate-fade-in">
       {/* Upper season and rank info */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <div className="space-y-3">
         {/* Active Season Banner */}
-        <div className="lg:col-span-3 bg-neutral-900 border border-neutral-800 rounded-2xl p-6 relative overflow-hidden flex flex-col justify-between">
-          <div className="absolute top-0 right-0 w-48 h-48 bg-violet-500/2 rounded-full blur-3xl" />
-          
+        <div className="relative flex flex-col justify-between overflow-hidden rounded-lg border border-neutral-800 bg-neutral-900 p-5">
           <div>
             <div className="flex items-center gap-2 mb-2">
               <span className="p-1 rounded-md bg-violet-500/10 border border-violet-500/20 text-violet-400">
@@ -43,7 +41,7 @@ export default function Leaderboards() {
 
             <h2 className="text-2xl font-extrabold text-white tracking-tight">Season 1: Chest Specialization</h2>
             <p className="text-xs text-neutral-400 leading-relaxed max-w-xl mt-2 font-sans">
-              All seasonal ELO ratings reset at the start of each 12-week mesocycle to foster fresh goals and competition. Current week: **Week 5 of 12**. Your performance on chest compound lifts yields a 1.2x ELO progress booster!
+              All seasonal ELO ratings reset at the start of each 12-week mesocycle to foster fresh goals and competition. Current week: Week 5 of 12. Your performance on chest compound lifts yields a 1.2x ELO progress booster.
             </p>
           </div>
 
@@ -62,14 +60,14 @@ export default function Leaderboards() {
         </div>
 
         {/* ELO Rank Calibration */}
-        <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-5 space-y-4">
+        <div className="space-y-4 rounded-lg border border-neutral-800 bg-neutral-900 p-5">
           <h3 className="text-xs font-bold font-mono text-neutral-300 uppercase tracking-wider flex items-center gap-1.5">
             <Trophy className="w-3.5 h-3.5 text-violet-400" />
             Rank Calibration
           </h3>
           <div className="space-y-2">
             {RANK_TIERS.map((tier) => (
-              <div key={tier.title} className={`flex items-center justify-between p-2 rounded-xl border text-[10px] ${tier.bg}`}>
+              <div key={tier.title} className={`flex items-center justify-between rounded-lg border p-2 text-[10px] ${tier.bg}`}>
                 <span className="font-bold">
                   {tier.title}
                 </span>
@@ -94,7 +92,7 @@ export default function Leaderboards() {
             <button
               key={id}
               onClick={() => setActiveBoard(id as typeof activeBoard)}
-              className={`flex-shrink-0 whitespace-nowrap px-3.5 py-2 rounded-full border text-xs font-semibold flex items-center gap-2 transition-all active:scale-95 ${
+              className={`flex-shrink-0 whitespace-nowrap rounded-lg border px-3.5 py-2 text-xs font-semibold flex items-center gap-2 transition-all active:scale-95 ${
                 activeBoard === id
                   ? "bg-violet-500/10 text-violet-400 border-violet-500/30"
                   : "bg-neutral-900 border-neutral-800 text-neutral-400"
@@ -108,8 +106,8 @@ export default function Leaderboards() {
 
         {/* Board Display Panel */}
         <div className="space-y-6">
-          <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6">
-            <h3 className="text-md font-bold text-white tracking-tight capitalize border-b border-neutral-850 pb-3 mb-2">
+          <div className="rounded-lg border border-neutral-800 bg-neutral-900 p-5">
+            <h3 className="border-b border-neutral-800 pb-3 mb-2 text-base font-bold capitalize tracking-tight text-white">
               {activeBoard} Leaderboard rankings
             </h3>
             <p className="text-xs text-neutral-400 leading-normal mb-6">
@@ -118,15 +116,15 @@ export default function Leaderboards() {
 
             {/* Table layout */}
             <div className="space-y-2">
-              {MOCK_LEADERBOARDS[activeBoard].map((item, idx) => {
+              {entries.map((item, idx) => {
                 const isSelf = item.id === "user-self";
                 return (
                   <div 
                     key={item.id} 
-                    className={`flex items-center justify-between p-4 rounded-xl border ${
+                    className={`flex items-center justify-between rounded-lg border p-4 ${
                       isSelf 
                         ? "bg-violet-500/10 border-violet-500/35 relative overflow-hidden" 
-                        : "bg-neutral-950 border-neutral-850"
+                        : "bg-neutral-950 border-neutral-800"
                     }`}
                   >
                     {isSelf && <div className="absolute left-0 top-0 bottom-0 w-1 bg-violet-400" />}
@@ -145,7 +143,7 @@ export default function Leaderboards() {
                           <span className={`text-xs font-bold ${isSelf ? "text-violet-400" : "text-white"}`}>
                             {item.username}
                           </span>
-                          <span className="text-[9px] px-1.5 py-0.2 rounded bg-neutral-900 text-neutral-500 border border-neutral-800 font-mono uppercase">
+                          <span className="rounded border border-neutral-800 bg-neutral-900 px-1.5 py-0.5 text-[9px] font-mono uppercase text-neutral-500">
                             {item.rankName}
                           </span>
                         </div>
@@ -153,7 +151,7 @@ export default function Leaderboards() {
                         {item.badges.length > 0 && (
                           <div className="flex gap-1 mt-1">
                             {item.badges.map((b) => (
-                              <span key={b} className="text-[8px] bg-neutral-900 px-1 py-0.2 rounded text-neutral-400 font-sans border border-neutral-800/60 font-medium">
+                              <span key={b} className="rounded border border-neutral-800/60 bg-neutral-900 px-1 py-0.5 text-[8px] font-medium text-neutral-400">
                                 {b}
                               </span>
                             ))}
@@ -174,15 +172,15 @@ export default function Leaderboards() {
       </div>
 
       {/* Hall of Fame section */}
-      <section className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6">
-        <h3 className="text-md font-bold text-white tracking-tight flex items-center gap-2 mb-4">
+      <section className="rounded-lg border border-neutral-800 bg-neutral-900 p-5">
+        <h3 className="mb-4 flex items-center gap-2 text-base font-bold tracking-tight text-white">
           <Star className="w-5 h-5 text-amber-500" />
           General Hall of Fame Registers
         </h3>
         
         <div className="space-y-3">
           {CURATED_HALL_OF_FAME.map((fame) => (
-            <div key={fame.season} className="bg-neutral-950 border border-neutral-855 rounded-xl p-4 grid grid-cols-1 sm:grid-cols-4 gap-4 text-center sm:text-left">
+            <div key={fame.season} className="grid grid-cols-1 gap-4 rounded-lg border border-neutral-800 bg-neutral-950 p-4 text-left">
               <div>
                 <span className="text-[9px] font-mono text-neutral-500 block uppercase">HISTORIC Meso SEASON</span>
                 <span className="text-xs font-extrabold text-white">{fame.season}</span>

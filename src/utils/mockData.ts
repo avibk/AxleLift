@@ -1,4 +1,4 @@
-import { Exercise, TargetMuscle, ScienceArticle, WorkoutSession, EloProfile, GymRank, LeaderboardUser } from "./types";
+import { Exercise, TargetMuscle, ScienceArticle, WorkoutSession, EloProfile, GymRank, LeaderboardUser } from "../types";
 
 export const EXERCISE_DATABASE: Exercise[] = [
   {
@@ -280,7 +280,7 @@ export const CURATED_SCIENCE_FEED: ScienceArticle[] = [
     title: "The Fallacy of High-Volume Training: Junk Volume Explained",
     category: "Myths",
     myth: "You need 20-30 sets per muscle weekly to maximize muscle growth.",
-    evidence: "A 2022 systematic review by Brad Schoenfeld et al. and recent training trials demonstrate a plateu in hypertrophy returns beyond 10-12 sets per session. Any sets performed past this threshold are labeled as 'junk volume'—they increase muscle damage and systemic recovery times without driving any extra muscle protein synthesis.",
+    evidence: "A 2022 systematic review by Brad Schoenfeld et al. and recent training trials demonstrate a plateau in hypertrophy returns beyond 10-12 sets per session. Any sets performed past this threshold are labeled as junk volume; they increase muscle damage and systemic recovery times without driving any extra muscle protein synthesis.",
     takeaway: "Perform 4-8 high-effort sets (0-2 RIR) per muscle group per workout. Quality and mechanical tension beat mindless set volume.",
     author: "Jeff Nippard & Brad Schoenfeld",
     citation: "Schoenfeld, B. et al. (2022). 'Dose-response relationship between weekly resistance training volume and increases in muscle mass'. Journal of Sports Sciences.",

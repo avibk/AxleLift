@@ -54,38 +54,6 @@ export interface MuscleStatus {
   status: "Undertrained" | "Optimal" | "Overreaching";
 }
 
-export enum GymRank {
-  NOVICE = "Novice",
-  INTERMEDIATE = "Intermediate",
-  ADVANCED = "Advanced",
-  ELITE = "Elite",
-  MONSTER = "Evidence-Based Monster",
-}
-
-export interface EloProfile {
-  lifetimeElo: number;
-  seasonalElo: number; // 12-week season
-  components: {
-    strength: number;      // 30% ratio (0-100)
-    progress: number;      // 30% ratio (0-100)
-    consistency: number;   // 20% ratio (0-100)
-    scienceScore: number;  // 20% ratio (0-100)
-  };
-  rank: GymRank;
-  seasonName: string;
-  weekOfSeason: number;
-}
-
-export interface LeaderboardUser {
-  id: string;
-  username: string;
-  avatarUrl?: string;
-  score: number; // Elo or metric
-  rankName: GymRank;
-  badges: string[];
-  metaValue?: string; // "140kg", "+18%", "45 days"
-}
-
 export interface ScienceArticle {
   id: string;
   title: string;
@@ -96,10 +64,4 @@ export interface ScienceArticle {
   author: string;
   citation: string;
   readCount: number;
-}
-
-export interface ChatMessage {
-  role: "user" | "model";
-  text: string;
-  timestamp: number;
 }

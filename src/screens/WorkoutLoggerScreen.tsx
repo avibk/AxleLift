@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { WorkoutSession, WorkoutExercise, TrainingSet, Exercise } from "../types";
-import { EXERCISE_DATABASE, getExerciseName } from "../data";
-import { calculateStimulusScore, calculateEffectiveReps, calculateEstimated1RM, getProgressionRecommendation } from "../utils";
+import { WorkoutSession, WorkoutExercise, TrainingSet } from "../types";
+import { EXERCISE_DATABASE, getExerciseName } from "../utils/mockData";
+import { calculateStimulusScore, calculateEffectiveReps, calculateEstimated1RM, getProgressionRecommendation } from "../utils/workoutMetrics";
 import { Plus, Trash2, Save, Calendar, Clock, Dumbbell, Sparkles, CheckCircle2, History, RotateCcw, ChevronDown } from "lucide-react";
 
 interface WorkoutLoggerProps {
@@ -70,7 +70,7 @@ function ExerciseCombobox({ value, onChange }: { value: string; onChange: (id: s
   );
 }
 
-export default function WorkoutLogger({ sessions, onSaveSession }: WorkoutLoggerProps) {
+export default function WorkoutLoggerScreen({ sessions, onSaveSession }: WorkoutLoggerProps) {
   // Session form state
   const [sessionName, setSessionName] = useState<string>("Evidence-Based Session");
   const [sessionNotes, setSessionNotes] = useState<string>("");
@@ -210,10 +210,10 @@ export default function WorkoutLogger({ sessions, onSaveSession }: WorkoutLogger
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 animate-fade-in">
+    <div className="space-y-5 animate-fade-in">
       {/* Active Workout Logger Column (Takes 2/3) */}
-      <div className="lg:col-span-2 space-y-6">
-        <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6">
+      <div className="space-y-5">
+        <div className="rounded-lg border border-neutral-800 bg-neutral-900 p-5">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
             <div>
               <h2 className="text-xl font-bold text-white tracking-tight flex items-center gap-2">
@@ -298,7 +298,7 @@ export default function WorkoutLogger({ sessions, onSaveSession }: WorkoutLogger
                       <div>
                         <p className="text-[11px] text-neutral-300">
                           <span className="font-bold text-violet-400">Overload Target: </span>
-                          Aim for <span className="font-bold">{progressionRec.targetWeight}kg × {progressionRec.targetRepsRange}</span> based on your previous session performance of {progressionRec.originalWeight}kg × {progressionRec.originalReps}.
+                          Aim for <span className="font-bold">{progressionRec.targetWeight}kg x {progressionRec.targetRepsRange}</span> based on your previous session performance of {progressionRec.originalWeight}kg x {progressionRec.originalReps}.
                         </p>
                       </div>
                     </div>
@@ -404,7 +404,7 @@ export default function WorkoutLogger({ sessions, onSaveSession }: WorkoutLogger
         </div>
 
         {/* Notes */}
-        <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6">
+        <div className="rounded-lg border border-neutral-800 bg-neutral-900 p-5">
           <label className="block text-sm font-bold text-white mb-3 text-center">Notes</label>
           {showNotesInput ? (
             <div className="space-y-3">
@@ -452,7 +452,7 @@ export default function WorkoutLogger({ sessions, onSaveSession }: WorkoutLogger
 
       {/* Completed Session Archives (Takes 1/3) */}
       <div className="space-y-6">
-        <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6">
+        <div className="rounded-lg border border-neutral-800 bg-neutral-900 p-5">
           <button
             onClick={() => setArchivesOpen((v) => !v)}
             className="w-full flex items-center justify-between mb-4 cursor-pointer"
@@ -472,7 +472,7 @@ export default function WorkoutLogger({ sessions, onSaveSession }: WorkoutLogger
               </div>
             ) : (
               sessions.map((session) => (
-                <div key={session.id} className="bg-neutral-950 border border-neutral-850 p-4 rounded-xl space-y-3 relative overflow-hidden">
+                <div key={session.id} className="bg-neutral-950 border border-neutral-800 p-4 rounded-xl space-y-3 relative overflow-hidden">
                   <div className="absolute top-0 right-0 w-16 h-16 bg-violet-500/2 rounded-full blur-xl" />
                   
                   <div className="flex justify-between items-start">
@@ -492,7 +492,7 @@ export default function WorkoutLogger({ sessions, onSaveSession }: WorkoutLogger
                   </div>
 
                   {session.notes && (
-                    <p className="text-[10px] text-neutral-400 italic bg-neutral-900/60 p-2 rounded border border-neutral-850/60 leading-normal">
+                    <p className="text-[10px] text-neutral-400 italic bg-neutral-900/60 p-2 rounded border border-neutral-800/60 leading-normal">
                       "{session.notes}"
                     </p>
                   )}
@@ -509,7 +509,7 @@ export default function WorkoutLogger({ sessions, onSaveSession }: WorkoutLogger
                             {getExerciseName(we.exerciseId)}
                           </span>
                           <span>
-                            {totalSets} Sets × {maxWeight}kg Max
+                            {totalSets} Sets x {maxWeight}kg Max
                           </span>
                         </div>
                       );

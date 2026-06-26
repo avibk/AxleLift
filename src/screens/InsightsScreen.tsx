@@ -1,7 +1,7 @@
 import React from "react";
 import { WorkoutSession, EloProfile } from "../types";
-import { EXERCISE_DATABASE } from "../data";
-import { getMuscleVolumeStats, getProgressionRecommendation, calculateStimulusScore } from "../utils";
+import { EXERCISE_DATABASE } from "../utils/mockData";
+import { getMuscleVolumeStats, getProgressionRecommendation, calculateStimulusScore } from "../utils/workoutMetrics";
 import {
   Activity,
   Target,
@@ -37,7 +37,7 @@ const REC_STYLE: Record<string, { Icon: any; text: string; bg: string; border: s
   deload: { Icon: RotateCcw, text: "text-amber-400", bg: "bg-amber-500/5", border: "border-amber-500/20" },
 };
 
-export default function Insights({ sessions, userElo }: InsightsProps) {
+export default function InsightsScreen({ sessions, userElo }: InsightsProps) {
   const now = Date.now();
   const recent = sessions.filter((s) => now - s.timestamp <= WEEK_MS);
 
@@ -98,13 +98,13 @@ export default function Insights({ sessions, userElo }: InsightsProps) {
       {/* Header */}
       <div className="mb-5">
         <h1 className="text-3xl font-extrabold tracking-tight text-white">Insights</h1>
-        <p className="text-xs text-neutral-500 mt-1">Computed from your logged training — no guesswork.</p>
+        <p className="text-xs text-neutral-500 mt-1">Computed from your logged training - no guesswork.</p>
       </div>
 
       {/* Weekly snapshot */}
       <div className="grid grid-cols-2 gap-3">
         {stats.map(({ label, value, hint, Icon }) => (
-          <div key={label} className="bg-neutral-900 rounded-3xl p-4">
+          <div key={label} className="bg-neutral-900 rounded-lg p-4">
             <Icon className="w-5 h-5 text-violet-400 mb-3" />
             <div className="flex items-baseline gap-1">
               <span className="text-2xl font-extrabold tracking-tight text-white">{value}</span>
@@ -116,14 +116,14 @@ export default function Insights({ sessions, userElo }: InsightsProps) {
       </div>
 
       {/* Lifting score breakdown */}
-      <div className="mt-3 bg-neutral-900 rounded-3xl p-5">
+      <div className="mt-3 bg-neutral-900 rounded-lg p-5">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-sm font-bold text-white flex items-center gap-2">
             <Gauge className="w-4 h-4 text-violet-400" />
             Lifting score
           </h2>
           <span className="text-[11px] font-mono text-violet-400 font-bold">
-            {userElo.lifetimeElo} ELO · {userElo.rank}
+            {userElo.lifetimeElo} ELO / {userElo.rank}
           </span>
         </div>
         <div className="space-y-3">
@@ -143,20 +143,20 @@ export default function Insights({ sessions, userElo }: InsightsProps) {
 
       {/* Weak point callout */}
       {weakPoints.length > 0 && (
-        <div className="mt-3 bg-amber-500/5 border border-amber-500/20 rounded-3xl p-4 flex gap-3">
+        <div className="mt-3 bg-amber-500/5 border border-amber-500/20 rounded-lg p-4 flex gap-3">
           <AlertTriangle className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
           <div>
             <p className="text-sm font-bold text-white">Focus this week</p>
             <p className="text-xs text-neutral-300 mt-1 leading-relaxed">
               {weakPoints.map((m) => m.muscle).join(", ")} {weakPoints.length === 1 ? "is" : "are"} below the weekly
-              volume target. Add 1–2 high-effort sets to drive growth.
+              volume target. Add 1-2 high-effort sets to drive growth.
             </p>
           </div>
         </div>
       )}
 
       {/* Muscle volume dashboard */}
-      <div className="mt-3 bg-neutral-900 rounded-3xl p-5">
+      <div className="mt-3 bg-neutral-900 rounded-lg p-5">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-sm font-bold text-white flex items-center gap-2">
             <Target className="w-4 h-4 text-violet-400" />
@@ -205,7 +205,7 @@ export default function Insights({ sessions, userElo }: InsightsProps) {
           Next-session targets
         </h2>
         {recs.length === 0 ? (
-          <div className="bg-neutral-900 rounded-3xl p-6 text-center">
+          <div className="bg-neutral-900 rounded-lg p-6 text-center">
             <p className="text-xs text-neutral-500">Log a workout to unlock progression targets.</p>
           </div>
         ) : (
@@ -214,7 +214,7 @@ export default function Insights({ sessions, userElo }: InsightsProps) {
               const style = REC_STYLE[rec.type];
               const Icon = style.Icon;
               return (
-                <div key={id} className={`rounded-3xl p-4 border ${style.bg} ${style.border}`}>
+                <div key={id} className={`rounded-lg p-4 border ${style.bg} ${style.border}`}>
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex-1">
                       <p className="text-sm font-bold text-white">{name}</p>
@@ -230,11 +230,11 @@ export default function Insights({ sessions, userElo }: InsightsProps) {
                   {rec.originalWeight > 0 && (
                     <div className="mt-3 flex items-center gap-2 text-[11px] font-mono">
                       <span className="px-2 py-1 rounded-lg bg-neutral-950/60 text-neutral-400">
-                        {rec.originalWeight}kg × {rec.originalReps}
+                        {rec.originalWeight}kg x {rec.originalReps}
                       </span>
                       <ChevronRight className="w-3.5 h-3.5 text-neutral-600" />
                       <span className={`px-2 py-1 rounded-lg bg-neutral-950/60 font-bold ${style.text}`}>
-                        {rec.targetWeight}kg × {rec.targetRepsRange}
+                        {rec.targetWeight}kg x {rec.targetRepsRange}
                       </span>
                     </div>
                   )}

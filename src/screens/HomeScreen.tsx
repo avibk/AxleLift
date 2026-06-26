@@ -1,12 +1,13 @@
 import React from "react";
+import type { AppTab } from "../components/features/BottomTabBar";
 import { WorkoutSession, EloProfile } from "../types";
-import { EXERCISE_DATABASE } from "../data";
+import { EXERCISE_DATABASE } from "../utils/mockData";
 import { SlidersHorizontal, Flame, CircleUser, Trophy } from "lucide-react";
 
-interface HomeProps {
+interface HomeScreenProps {
   sessions: WorkoutSession[];
   userElo: EloProfile;
-  onNavigate: (tab: string) => void;
+  onNavigate: (tab: AppTab) => void;
 }
 
 const ONE_WEEK_MS = 7 * 24 * 60 * 60 * 1000;
@@ -81,7 +82,7 @@ function Ring({ value, label }: { value: number; label: string }) {
   );
 }
 
-export default function Home({ sessions, userElo, onNavigate }: HomeProps) {
+export default function HomeScreen({ sessions, userElo, onNavigate }: HomeScreenProps) {
   const now = Date.now();
   const recent = sessions.filter((s) => now - s.timestamp <= ONE_WEEK_MS);
   const volumeLbs = Math.round(tonnageKg(recent) * KG_TO_LBS);
@@ -116,7 +117,7 @@ export default function Home({ sessions, userElo, onNavigate }: HomeProps) {
         {/* Routine card */}
         <button
           onClick={() => onNavigate("logger")}
-          className="text-left bg-neutral-900 rounded-3xl p-4 h-[160px] flex flex-col justify-between active:scale-[0.98] transition-transform"
+          className="text-left bg-neutral-900 rounded-lg p-4 h-[160px] flex flex-col justify-between active:scale-[0.98] transition-transform"
         >
           <div className="flex items-start justify-between">
             <Ring value={(userElo.weekOfSeason / 12) * 100} label="1" />
@@ -133,7 +134,7 @@ export default function Home({ sessions, userElo, onNavigate }: HomeProps) {
         </button>
 
         {/* Big stat card */}
-        <div className="bg-neutral-900 rounded-3xl p-4 h-[160px] flex flex-col justify-between">
+        <div className="bg-neutral-900 rounded-lg p-4 h-[160px] flex flex-col justify-between">
           <div className="flex items-start justify-end">
             <SlidersHorizontal className="w-4 h-4 text-neutral-600" />
           </div>
@@ -153,7 +154,7 @@ export default function Home({ sessions, userElo, onNavigate }: HomeProps) {
       </div>
 
       {/* Consistency heatmap + secondary routine */}
-      <div className="bg-neutral-900 rounded-3xl p-5 mt-3.5">
+      <div className="bg-neutral-900 rounded-lg p-5 mt-3.5">
         <div className="flex items-start justify-between gap-4">
           {months.map((month, mIdx) => (
             <div key={month} className="flex-1">
@@ -194,7 +195,7 @@ export default function Home({ sessions, userElo, onNavigate }: HomeProps) {
       </div>
 
       {/* Volume lifted */}
-      <div className="bg-neutral-900 rounded-3xl p-5 mt-3.5 flex items-center justify-between">
+      <div className="bg-neutral-900 rounded-lg p-5 mt-3.5 flex items-center justify-between">
         <div>
           <p className="text-[15px] font-bold text-white leading-tight">Volume lifted</p>
           <p className="text-xs text-neutral-500 mt-0.5">Last 7 days</p>
@@ -210,14 +211,14 @@ export default function Home({ sessions, userElo, onNavigate }: HomeProps) {
 
       {/* Streak + start new */}
       <div className="grid grid-cols-2 gap-3.5 mt-3.5">
-        <div className="bg-neutral-900 rounded-3xl p-5 flex flex-col justify-end h-[120px]">
+        <div className="bg-neutral-900 rounded-lg p-5 flex flex-col justify-end h-[120px]">
           <div className="flex items-center gap-2">
             <span className="text-3xl font-extrabold tracking-tight text-white">30</span>
             <Flame className="w-6 h-6 text-amber-500 fill-amber-500" />
           </div>
           <p className="text-xs text-neutral-500 mt-0.5">Day streak</p>
         </div>
-        <div className="bg-neutral-900 rounded-3xl p-5 flex flex-col justify-end h-[120px]">
+        <div className="bg-neutral-900 rounded-lg p-5 flex flex-col justify-end h-[120px]">
           <div className="flex items-center gap-2">
             <span className="text-3xl font-extrabold tracking-tight text-white">{userElo.lifetimeElo}</span>
             <Trophy className="w-5 h-5 text-violet-400" />

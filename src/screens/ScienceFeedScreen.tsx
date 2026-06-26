@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { ScienceArticle } from "../types";
-import { CURATED_SCIENCE_FEED } from "../data";
+import { CURATED_SCIENCE_FEED } from "../utils/mockData";
 import { BookOpen, Search, Award, AlertCircle, Quote, Eye } from "lucide-react";
 
-export default function ScienceFeed() {
+export default function ScienceFeedScreen() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<string>("All");
 
@@ -20,9 +20,9 @@ export default function ScienceFeed() {
   });
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="space-y-5 animate-fade-in">
       {/* Feed Description */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-2">
+      <div className="flex flex-col justify-between gap-4 mb-2">
         <div>
           <h2 className="text-xl font-bold text-white tracking-tight flex items-center gap-2">
             <BookOpen className="w-5 h-5 text-violet-400" />
@@ -55,7 +55,7 @@ export default function ScienceFeed() {
             className={`px-3 py-1.5 rounded-xl text-xs font-semibold font-mono tracking-tight transition-all duration-200 border ${
               activeCategory === cat
                 ? "bg-violet-500/10 text-violet-400 border-violet-500/30"
-                : "bg-neutral-900 text-neutral-400 border-neutral-850 hover:text-neutral-300 hover:bg-neutral-850"
+                : "bg-neutral-900 text-neutral-400 border-neutral-800 hover:text-neutral-300 hover:bg-neutral-800"
             }`}
           >
             {cat.toUpperCase()}
@@ -65,15 +65,15 @@ export default function ScienceFeed() {
 
       {/* Articles Grid */}
       {filteredArticles.length === 0 ? (
-        <div className="text-center py-16 bg-neutral-900 border border-neutral-800 rounded-2xl">
+        <div className="rounded-lg border border-neutral-800 bg-neutral-900 py-16 text-center">
           <p className="text-neutral-500 text-xs">No research articles match your search parameters.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 gap-4">
           {filteredArticles.map((article) => (
             <div
               key={article.id}
-              className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6 flex flex-col justify-between relative overflow-hidden group hover:border-violet-500/20 transition-all duration-300"
+              className="group relative flex flex-col justify-between overflow-hidden rounded-lg border border-neutral-800 bg-neutral-900 p-5 transition-all duration-300 hover:border-violet-500/20"
             >
               <div className="absolute top-0 right-0 w-24 h-24 bg-violet-500/[0.01] rounded-full blur-2xl pointer-events-none" />
 
@@ -87,7 +87,7 @@ export default function ScienceFeed() {
                   </span>
                 </div>
 
-                <h3 className="text-md font-bold text-white tracking-tight leading-snug group-hover:text-violet-400 transition-colors">
+                <h3 className="text-base font-bold text-white tracking-tight leading-snug group-hover:text-violet-400 transition-colors">
                   {article.title}
                 </h3>
 
@@ -103,7 +103,7 @@ export default function ScienceFeed() {
                 </div>
 
                 {/* Scientific Evidence */}
-                <div className="bg-neutral-950 p-3.5 rounded-xl border border-neutral-850 space-y-1.5">
+                <div className="bg-neutral-950 p-3.5 rounded-xl border border-neutral-800 space-y-1.5">
                   <div className="text-neutral-400 text-[10px] font-mono font-bold uppercase">
                     Peer-Reviewed Molecular Evidence
                   </div>
