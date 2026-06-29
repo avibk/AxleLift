@@ -1,4 +1,4 @@
-# Science-Based Lifting OS
+# Science-Based Lifting App
 
 **The operating system for evidence-based lifting.**
 
