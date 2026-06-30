@@ -1,3 +1,22 @@
-node_modules
+# dependencies
+node_modules/
+
+# expo
+.expo/
+dist/
+web-build/
+expo-env.d.ts
+
+# native build output
+/ios
+/android
+
+# misc
+*.log
 dev.log
-dist
+.DS_Store
+
+# local env (never commit real secrets)
+.env
+.env*.local
+.env*.local 
