@@ -1,12 +1,10 @@
 import { Tabs } from "expo-router";
 import { Activity, BookOpen, Dumbbell, LayoutGrid, Trophy } from "lucide-react-native";
-import { WorkoutProvider } from "@/contexts/WorkoutContext";
 import { colors } from "@/lib/colors";
 
 export default function TabsLayout() {
   return (
-    <WorkoutProvider>
-      <Tabs
+    <Tabs
         screenOptions={{
           headerShown: false,
           tabBarActiveTintColor: colors.brand400,
@@ -58,6 +56,5 @@ export default function TabsLayout() {
           }}
         />
       </Tabs>
-    </WorkoutProvider>
   );
 }

@@ -122,7 +122,8 @@ export const workoutService = {
         const remote = await this.loadRemote(userId);
         await this.saveLocal(remote);
         return remote;
-      } catch {
+      } catch (err) {
+        if (__DEV__) console.warn("[workoutService] remote load failed, using local:", err);
         return this.loadLocal();
       }
     }
@@ -144,8 +145,8 @@ export const workoutService = {
     if (isSupabaseConfigured && supabase && userId) {
       try {
         await this.appendRemote(session, next.userElo, userId);
-      } catch {
-        // Stored locally; will reconcile on next successful sync.
+      } catch (err) {
+        if (__DEV__) console.warn("[workoutService] remote sync failed:", err);
       }
     }
 

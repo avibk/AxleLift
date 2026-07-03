@@ -23,16 +23,6 @@
   "exclude": [
     "node_modules",
     "dist",
-    ".expo",
-    "server.ts",
-    "vite.config.ts",
-    "src/screens",
-    "src/navigation",
-    "src/components",
-    "src/services",
-    "src/hooks",
-    "src/MobileApp.tsx",
-    "src/main.tsx",
-    "src/vite-env.d.ts"
+    ".expo"
   ]
 }

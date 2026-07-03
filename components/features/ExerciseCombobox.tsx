@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Pressable, Text, TextInput, View } from "react-native";
-import { EXERCISE_DATABASE, getExerciseName } from "@/src/utils/mockData";
+import { EXERCISE_DATABASE, getExerciseName } from "@/src/data/exercises";
 import { colors } from "@/lib/colors";
 
 interface ExerciseComboboxProps {

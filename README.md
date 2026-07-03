@@ -71,9 +71,9 @@ Users learn to think like coaches rather than simply counting exercises.
 
 ---
 
-### Science Feed
+### Fitness Feed
 
-Short-form educational content covering:
+Live research papers from Europe PMC and PubMed covering:
 
 * Hypertrophy
 * Recovery
@@ -227,8 +227,26 @@ npm install
 Run the development server:
 
 ```bash
-npm run dev
+npx expo start
 ```
+
+Clear the cache after changing environment variables:
+
+```bash
+npx expo start -c
+```
+
+### Backend (Supabase)
+
+1. Create a project at [supabase.com](https://supabase.com).
+2. Copy `.env.example` to `.env` and fill in:
+   - `EXPO_PUBLIC_SUPABASE_URL`
+   - `EXPO_PUBLIC_SUPABASE_ANON_KEY`
+3. In the Supabase **SQL Editor**, run the full script in `supabase/schema.sql`.
+4. Restart Expo with cache clear (`npx expo start -c`).
+5. Sign up in the app with a real account — the demo banner disappears once credentials are valid.
+
+Without `.env` credentials the app runs in local demo mode (AsyncStorage only).
 
 ---
 

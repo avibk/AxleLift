@@ -3,7 +3,6 @@ import {
   Award,
   Brain,
   Calendar,
-  Dumbbell,
   Flame,
   Medal,
   Star,
@@ -12,40 +11,43 @@ import {
   type LucideIcon,
 } from "lucide-react-native";
 import { Screen } from "@/components/ui/Screen";
+import { Loader } from "@/components/ui/Loader";
+import { UserAvatar } from "@/components/features/UserAvatar";
 import { useLeaderboard, type LeaderboardId } from "@/hooks/useLeaderboard";
-import { CURATED_HALL_OF_FAME } from "@/src/utils/mockData";
+import { useAuth } from "@/contexts/AuthContext";
+import { GymRank } from "@/src/types";
 import { colors } from "@/lib/colors";
 
 const RANK_TIERS = [
-  { title: "Novice", eloRange: "0 - 1000", muted: true },
-  { title: "Intermediate", eloRange: "1000 - 1500", muted: false },
-  { title: "Advanced", eloRange: "1500 - 2000", muted: false },
-  { title: "Elite", eloRange: "2000 - 2500", muted: false },
-  { title: "Evidence-Based Monster", eloRange: "2500+", muted: false },
+  { title: GymRank.ROOKIE, eloRange: "< 1000", muted: true },
+  { title: GymRank.NOVICE, eloRange: "1000 – 1499", muted: false },
+  { title: GymRank.PULSAR, eloRange: "1500 – 1999", muted: false },
+  { title: GymRank.QUASAR, eloRange: "2000 – 2499", muted: false },
+  { title: GymRank.SUPERNOVA, eloRange: "2500+", muted: false },
 ];
 
 const BOARDS: { id: LeaderboardId; label: string; Icon: LucideIcon }[] = [
-  { id: "bench", label: "Bench", Icon: Dumbbell },
-  { id: "relative", label: "Relative", Icon: Award },
-  { id: "progress", label: "Improved", Icon: TrendingUp },
-  { id: "consistency", label: "Attendance", Icon: Flame },
+  { id: "lifetime", label: "Lifetime", Icon: Trophy },
+  { id: "seasonal", label: "Seasonal", Icon: Award },
+  { id: "progress", label: "Progress", Icon: TrendingUp },
+  { id: "consistency", label: "Consistency", Icon: Flame },
   { id: "science", label: "Science", Icon: Brain },
 ];
 
 const SUBTITLES: Record<LeaderboardId, string> = {
-  bench: "Standard absolute bench press max logged inside active mesocycles.",
-  relative: "Bench press max divided by bodyweight. Promotes general athleticism.",
-  progress: "Highest rate of estimated 1RM development in the last 90 days.",
-  consistency: "Attendance and scheduled-log compliance across 24 seasonal workouts.",
-  science: "Awarded for logging accuracy, RIR precision, and weekly volume goals.",
+  lifetime: "Total lifetime ELO earned from logged training quality and volume.",
+  seasonal: "Current mesocycle seasonal ELO — resets each 12-week season.",
+  progress: "Progress component score (0–100) from your training trajectory.",
+  consistency: "Consistency component score (0–100) from workout attendance.",
+  science: "Science score component (0–100) from RIR accuracy and stimulus quality.",
 };
 
 export default function LeaderboardsScreen() {
-  const { activeBoard, setActiveBoard, entries } = useLeaderboard("bench");
+  const { user, isConfigured } = useAuth();
+  const { activeBoard, setActiveBoard, entries, loading, error } = useLeaderboard("lifetime");
 
   return (
     <Screen>
-      {/* Season banner */}
       <View className="rounded-2xl border border-neutral-800 bg-neutral-900 p-5">
         <View className="mb-2 flex-row items-center gap-2">
           <View className="rounded-md border border-brand-500/20 bg-brand-500/10 p-1">
@@ -55,26 +57,12 @@ export default function LeaderboardsScreen() {
             Mesocycle Competition
           </Text>
         </View>
-        <Text className="text-2xl font-bold tracking-tight text-white">
-          Season 1: Chest Specialization
-        </Text>
+        <Text className="text-2xl font-bold tracking-tight text-white">Season 1</Text>
         <Text className="mt-2 text-xs leading-relaxed text-neutral-400">
-          Seasonal ELO resets every 12-week mesocycle. Week 5 of 12 — chest compound lifts earn a 1.2x
-          ELO booster.
+          Rankings reflect real athlete profiles. Log workouts to climb the boards.
         </Text>
-        <View className="mt-5 flex-row flex-wrap items-center gap-2 border-t border-neutral-800/80 pt-4">
-          {["Top 1% Bench", "Science Master", "30-Day Streak"].map((badge) => (
-            <View
-              key={badge}
-              className="rounded-lg border border-brand-500/20 bg-brand-500/5 px-2 py-1"
-            >
-              <Text className="text-[10px] font-bold text-brand-400">{badge}</Text>
-            </View>
-          ))}
-        </View>
       </View>
 
-      {/* Rank calibration */}
       <View className="mt-3 rounded-2xl border border-neutral-800 bg-neutral-900 p-5">
         <View className="mb-4 flex-row items-center gap-1.5">
           <Trophy size={14} color={colors.brand400} />
@@ -97,13 +85,12 @@ export default function LeaderboardsScreen() {
               >
                 {tier.title}
               </Text>
-              <Text className="text-[11px] text-neutral-400">{tier.eloRange} Elo</Text>
+              <Text className="text-[11px] text-neutral-400">{tier.eloRange} ELO</Text>
             </View>
           ))}
         </View>
       </View>
 
-      {/* Board selector */}
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -131,27 +118,39 @@ export default function LeaderboardsScreen() {
         })}
       </ScrollView>
 
-      {/* Board panel */}
       <View className="mt-4 rounded-2xl border border-neutral-800 bg-neutral-900 p-5">
         <Text className="mb-1 border-b border-neutral-800 pb-3 text-base font-bold capitalize text-white">
           {activeBoard} rankings
         </Text>
         <Text className="mb-5 mt-3 text-xs leading-normal text-neutral-400">{SUBTITLES[activeBoard]}</Text>
 
-        <View className="gap-2">
-          {entries.map((item, idx) => {
-            const isSelf = item.id === "user-self";
-            const medalColor =
-              idx === 0 ? colors.brand400 : idx === 2 ? colors.brand500 : colors.textMuted;
-            return (
-              <View
-                key={item.id}
-                className={`flex-row items-center justify-between overflow-hidden rounded-xl border p-4 ${
-                  isSelf ? "border-brand-500/35 bg-brand-500/10" : "border-neutral-800 bg-neutral-950"
-                }`}
-              >
-                {isSelf ? <View className="absolute bottom-0 left-0 top-0 w-1 bg-brand-400" /> : null}
-                <View className="flex-1 flex-row items-center gap-4">
+        {loading ? (
+          <Loader />
+        ) : error ? (
+          <Text className="py-8 text-center text-xs text-neutral-500">{error}</Text>
+        ) : !isConfigured ? (
+          <Text className="py-8 text-center text-xs text-neutral-500">
+            Connect Supabase to see live rankings.
+          </Text>
+        ) : entries.length === 0 ? (
+          <Text className="py-8 text-center text-xs text-neutral-500">
+            No lifters on this board yet. Be the first to log a workout.
+          </Text>
+        ) : (
+          <View className="gap-2">
+            {entries.map((item, idx) => {
+              const isSelf = item.id === user?.id;
+              const medalColor =
+                idx === 0 ? colors.brand400 : idx === 2 ? colors.brand500 : colors.textMuted;
+              return (
+                <View
+                  key={item.id}
+                  className={`flex-row items-center justify-between overflow-hidden rounded-xl border p-4 ${
+                    isSelf ? "border-brand-500/35 bg-brand-500/10" : "border-neutral-800 bg-neutral-950"
+                  }`}
+                >
+                  {isSelf ? <View className="absolute bottom-0 left-0 top-0 w-1 bg-brand-400" /> : null}
+                  <View className="flex-1 flex-row items-center gap-4">
                   <View className="w-6 items-center">
                     {idx <= 2 ? (
                       <Medal size={20} color={medalColor} />
@@ -159,64 +158,34 @@ export default function LeaderboardsScreen() {
                       <Text className="text-xs font-bold text-neutral-400">{idx + 1}</Text>
                     )}
                   </View>
+                  <UserAvatar uri={item.avatarUrl} size={32} />
                   <View className="flex-1">
-                    <View className="flex-row items-center gap-2">
-                      <Text className={`text-xs font-bold ${isSelf ? "text-brand-400" : "text-white"}`}>
-                        {item.username}
-                      </Text>
-                      <View className="rounded border border-neutral-800 bg-neutral-900 px-1.5 py-0.5">
-                        <Text className="text-[9px] uppercase text-neutral-500">{item.rankName}</Text>
+                      <View className="flex-row items-center gap-2">
+                        <Text className={`text-xs font-bold ${isSelf ? "text-brand-400" : "text-white"}`}>
+                          {item.username}
+                        </Text>
+                        <View className="rounded border border-neutral-800 bg-neutral-900 px-1.5 py-0.5">
+                          <Text className="text-[9px] uppercase text-neutral-500">{item.rankName}</Text>
+                        </View>
                       </View>
                     </View>
-                    {item.badges.length > 0 ? (
-                      <View className="mt-1 flex-row flex-wrap gap-1">
-                        {item.badges.map((b) => (
-                          <View
-                            key={b}
-                            className="rounded border border-neutral-800/60 bg-neutral-900 px-1 py-0.5"
-                          >
-                            <Text className="text-[8px] text-neutral-400">{b}</Text>
-                          </View>
-                        ))}
-                      </View>
-                    ) : null}
                   </View>
+                  <Text className="text-xs font-bold text-white">{item.metaValue}</Text>
                 </View>
-                <Text className="text-xs font-bold uppercase text-white">{item.metaValue}</Text>
-              </View>
-            );
-          })}
-        </View>
+              );
+            })}
+          </View>
+        )}
       </View>
 
-      {/* Hall of Fame */}
       <View className="mt-3 rounded-2xl border border-neutral-800 bg-neutral-900 p-5">
         <View className="mb-4 flex-row items-center gap-2">
           <Star size={18} color={colors.brand500} />
           <Text className="text-base font-bold tracking-tight text-white">Hall of Fame</Text>
         </View>
-        <View className="gap-3">
-          {CURATED_HALL_OF_FAME.map((fame) => (
-            <View key={fame.season} className="gap-3 rounded-xl border border-neutral-800 bg-neutral-950 p-4">
-              <View>
-                <Text className="text-[9px] uppercase text-neutral-500">Historic Meso Season</Text>
-                <Text className="text-xs font-bold text-white">{fame.season}</Text>
-              </View>
-              <View>
-                <Text className="text-[9px] uppercase text-neutral-500">Bench Overload Champ</Text>
-                <Text className="text-xs font-semibold text-neutral-300">{fame.benchChamp}</Text>
-              </View>
-              <View>
-                <Text className="text-[9px] uppercase text-neutral-500">Lifting Science Champ</Text>
-                <Text className="text-xs font-semibold text-neutral-300">{fame.scienceChamp}</Text>
-              </View>
-              <View>
-                <Text className="text-[9px] uppercase text-neutral-500">Consistency Champ</Text>
-                <Text className="text-xs font-semibold text-neutral-300">{fame.consistencyChamp}</Text>
-              </View>
-            </View>
-          ))}
-        </View>
+        <Text className="text-xs leading-relaxed text-neutral-500">
+          Season champions will appear here after the first mesocycle completes.
+        </Text>
       </View>
     </Screen>
   );

@@ -1,11 +1,11 @@
 import { EloProfile, GymRank, WorkoutSession } from "../types";
 
 export function getRankForElo(lifetimeElo: number): GymRank {
-  if (lifetimeElo < 1000) return GymRank.NOVICE;
-  if (lifetimeElo < 1500) return GymRank.INTERMEDIATE;
-  if (lifetimeElo < 2000) return GymRank.ADVANCED;
-  if (lifetimeElo < 2500) return GymRank.ELITE;
-  return GymRank.MONSTER;
+  if (lifetimeElo < 1000) return GymRank.ROOKIE;
+  if (lifetimeElo < 1500) return GymRank.NOVICE;
+  if (lifetimeElo < 2000) return GymRank.PULSAR;
+  if (lifetimeElo < 2500) return GymRank.QUASAR;
+  return GymRank.SUPERNOVA;
 }
 
 export function calculateNextEloProfile(userElo: EloProfile, newSession: WorkoutSession): EloProfile {

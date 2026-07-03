@@ -15,7 +15,7 @@ import { Screen } from "@/components/ui/Screen";
 import { Modal } from "@/components/ui/Modal";
 import { ExerciseCombobox } from "@/components/features/ExerciseCombobox";
 import { useWorkout } from "@/contexts/WorkoutContext";
-import { getExerciseName } from "@/src/utils/mockData";
+import { getExerciseName } from "@/src/data/exercises";
 import {
   calculateEffectiveReps,
   calculateEstimated1RM,

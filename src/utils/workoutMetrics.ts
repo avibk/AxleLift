@@ -1,5 +1,5 @@
 import { WorkoutSession, TargetMuscle, MuscleStatus } from "../types";
-import { EXERCISE_DATABASE } from "./mockData";
+import { EXERCISE_DATABASE } from "../data/exercises";
 
 /**
  * Calculates stimulus score based on Reps In Reserve (RIR).

@@ -1,5 +1,5 @@
 import { EloProfile, WorkoutSession } from "../types";
-import { INITIAL_ELO_PROFILE, INITIAL_WORKOUT_HISTORY } from "../utils/mockData";
+import { DEFAULT_ELO_PROFILE } from "../constants/defaults";
 
 export interface WorkoutState {
   sessions: WorkoutSession[];
@@ -14,6 +14,6 @@ export const WORKOUT_STORAGE_KEYS = {
 } as const;
 
 export const DEFAULT_WORKOUT_STATE: WorkoutState = {
-  sessions: INITIAL_WORKOUT_HISTORY,
-  userElo: INITIAL_ELO_PROFILE,
+  sessions: [],
+  userElo: DEFAULT_ELO_PROFILE,
 };

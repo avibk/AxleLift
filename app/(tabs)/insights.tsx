@@ -16,7 +16,7 @@ import {
 import { Screen } from "@/components/ui/Screen";
 import { Loader } from "@/components/ui/Loader";
 import { useWorkout } from "@/contexts/WorkoutContext";
-import { EXERCISE_DATABASE } from "@/src/utils/mockData";
+import { EXERCISE_DATABASE } from "@/src/data/exercises";
 import {
   calculateStimulusScore,
   getMuscleVolumeStats,

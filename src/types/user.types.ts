@@ -1,9 +1,9 @@
 export enum GymRank {
+  ROOKIE = "Rookie",
   NOVICE = "Novice",
-  INTERMEDIATE = "Intermediate",
-  ADVANCED = "Advanced",
-  ELITE = "Elite",
-  MONSTER = "Evidence-Based Monster",
+  PULSAR = "Pulsar",
+  QUASAR = "Quasar",
+  SUPERNOVA = "Supernova",
 }
 
 export interface EloProfile {

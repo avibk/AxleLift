@@ -1,13 +1,15 @@
-import { Alert, Pressable, Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 import { useRouter } from "expo-router";
-import { CircleUser, Flame, SlidersHorizontal, Trophy } from "lucide-react-native";
+import { Flame, SlidersHorizontal, Trophy } from "lucide-react-native";
 import { Screen } from "@/components/ui/Screen";
 import { Loader } from "@/components/ui/Loader";
 import { ProgressRing } from "@/components/ui/ProgressRing";
+import { UserAvatar } from "@/components/features/UserAvatar";
 import { useWorkout } from "@/contexts/WorkoutContext";
-import { useAuth } from "@/contexts/AuthContext";
-import { EXERCISE_DATABASE } from "@/src/utils/mockData";
+import { useProfile } from "@/hooks/useProfile";
+import { EXERCISE_DATABASE } from "@/src/data/exercises";
 import { WorkoutSession } from "@/src/types";
+import { computeDayStreak } from "@/src/utils/streak";
 import { colors } from "@/lib/colors";
 
 const ONE_WEEK_MS = 7 * 24 * 60 * 60 * 1000;
@@ -41,9 +43,17 @@ function sessionFocus(session: WorkoutSession): string {
   return list.slice(0, 2).join(" + ").toLowerCase();
 }
 
+function recentMonthLabels(): string[] {
+  const now = new Date();
+  return Array.from({ length: 3 }, (_, i) => {
+    const d = new Date(now.getFullYear(), now.getMonth() - (2 - i), 1);
+    return d.toLocaleDateString("en-US", { month: "short" });
+  });
+}
+
 export default function HomeScreen() {
   const router = useRouter();
-  const { signOut } = useAuth();
+  const { profile } = useProfile();
   const { sessions, userElo, isReady } = useWorkout();
 
   if (!isReady) return <Loader />;
@@ -51,6 +61,7 @@ export default function HomeScreen() {
   const now = Date.now();
   const recent = sessions.filter((s) => now - s.timestamp <= ONE_WEEK_MS);
   const volumeDisplay = Math.round(tonnageKg(recent) * KG_TO_LBS).toLocaleString("en-US");
+  const dayStreak = computeDayStreak(sessions.map((s) => s.timestamp));
 
   const sorted = [...sessions].sort((a, b) => b.timestamp - a.timestamp);
   const lastSession = sorted[0];
@@ -59,28 +70,25 @@ export default function HomeScreen() {
 
   const sessionDays = new Set(sessions.map((s) => Math.floor(s.timestamp / DAY_MS)));
   const today = Math.floor(now / DAY_MS);
-  const months = ["Jan", "Feb", "Mar"];
-
-  const confirmSignOut = () =>
-    Alert.alert("Account", "Sign out of AxleLift?", [
-      { text: "Cancel", style: "cancel" },
-      { text: "Sign out", style: "destructive", onPress: () => signOut() },
-    ]);
+  const months = recentMonthLabels();
 
   return (
     <Screen>
-      {/* Header */}
       <View className="flex-row items-center justify-between pb-6 pt-2">
         <Text className="text-4xl font-bold tracking-tight text-white">Workouts</Text>
-        <Pressable
-          onPress={confirmSignOut}
-          className="h-11 w-11 items-center justify-center rounded-full bg-neutral-800 active:opacity-80"
-        >
-          <CircleUser size={24} color={colors.textMuted} />
-        </Pressable>
+        <View className="flex-row items-center gap-3">
+          <View className="items-end">
+            <Text className="text-xs font-bold text-brand-400">{userElo.rank}</Text>
+            <Text className="text-[10px] text-neutral-500">{userElo.lifetimeElo} ELO</Text>
+          </View>
+          <UserAvatar
+            uri={profile?.avatarUrl}
+            size={44}
+            onPress={() => router.push("/settings")}
+          />
+        </View>
       </View>
 
-      {/* Routine + science score */}
       <View className="flex-row gap-3.5">
         <Pressable
           onPress={() => router.push("/logger")}
@@ -92,12 +100,12 @@ export default function HomeScreen() {
           </View>
           <View>
             <Text className="text-[15px] font-bold capitalize text-white" numberOfLines={1}>
-              {routineA ? sessionFocus(routineA) : "Chest + triceps"}
+              {routineA ? sessionFocus(routineA) : "No workouts yet"}
             </Text>
             <Text className="mt-0.5 text-xs text-neutral-500">
               {routineA
                 ? new Date(routineA.timestamp).toLocaleDateString("en-US", { weekday: "long" })
-                : "Fridays"}
+                : "Log your first session"}
             </Text>
           </View>
         </Pressable>
@@ -115,13 +123,12 @@ export default function HomeScreen() {
             </View>
             <Text className="mt-1 text-[15px] font-bold text-white">Science score</Text>
             <Text className="mt-0.5 text-xs text-neutral-500">
-              {lastSession ? timeAgo(lastSession.timestamp) : "no data yet"}
+              {lastSession ? timeAgo(lastSession.timestamp) : "No data yet"}
             </Text>
           </View>
         </View>
       </View>
 
-      {/* Consistency heatmap */}
       <View className="mt-3.5 rounded-3xl bg-neutral-900 p-5">
         <View className="flex-row justify-between gap-4">
           {months.map((month, mIdx) => (
@@ -149,15 +156,15 @@ export default function HomeScreen() {
 
         <View className="mt-5 flex-row items-center justify-between border-t border-neutral-800/70 pt-4">
           <View className="flex-row items-center gap-3.5">
-            <ProgressRing value={70} label="2" />
+            <ProgressRing value={routineB ? 70 : 0} label="2" />
             <View>
               <Text className="text-[15px] font-bold capitalize text-white" numberOfLines={1}>
-                {routineB ? sessionFocus(routineB) : "Back + biceps"}
+                {routineB ? sessionFocus(routineB) : "Previous session"}
               </Text>
               <Text className="mt-0.5 text-xs text-neutral-500">
                 {routineB
                   ? new Date(routineB.timestamp).toLocaleDateString("en-US", { weekday: "long" })
-                  : "Mondays"}
+                  : "—"}
               </Text>
             </View>
           </View>
@@ -165,7 +172,6 @@ export default function HomeScreen() {
         </View>
       </View>
 
-      {/* Volume lifted */}
       <View className="mt-3.5 flex-row items-center justify-between rounded-3xl bg-neutral-900 p-5">
         <View>
           <Text className="text-[15px] font-bold text-white">Volume lifted</Text>
@@ -180,11 +186,10 @@ export default function HomeScreen() {
         </View>
       </View>
 
-      {/* Streak + ELO */}
       <View className="mt-3.5 flex-row gap-3.5">
         <View className="h-28 flex-1 justify-end rounded-3xl bg-neutral-900 p-5">
           <View className="flex-row items-center gap-2">
-            <Text className="text-3xl font-bold tracking-tight text-white">30</Text>
+            <Text className="text-3xl font-bold tracking-tight text-white">{dayStreak}</Text>
             <Flame size={24} color={colors.brand500} fill={colors.brand500} />
           </View>
           <Text className="mt-0.5 text-xs text-neutral-500">Day streak</Text>
