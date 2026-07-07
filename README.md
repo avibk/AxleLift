@@ -1,6 +1,6 @@
-# Science-Based Lifting App
+# Axlelift
 
-**The operating system for evidence-based lifting.**
+**Scienced & Evidence-based lifting app for beginners to advanced lifters.**
 
 Track workouts, learn the science, compete through meaningful progression, and get computed training insights powered by data—not gym myths.
 
@@ -12,7 +12,7 @@ Track workouts, learn the science, compete through meaningful progression, and g
 
 Most fitness apps focus on recording workouts.
 
-Science-Based Lifting OS is designed to help users understand **why** they are training a certain way through evidence-based education, intelligent progression systems, and a deterministic insights engine.
+AxleLift is designed to help users understand **why** they are training a certain way through evidence-based education, fun and interactive ranked (elo) progression systems, and a deterministic insights engine.
 
 Our mission is to make science-based lifting accessible to everyone—from complete beginners to advanced lifters.
 
@@ -214,11 +214,11 @@ Optimize later.
 
 ### Prerequisites
 
-* Node.js
-
+* Install Node.js (https://nodejs.org/en/download)
+* Expo Go app on your IOS device
 ### Installation
 
-Install dependencies:
+Install dependencies [in your terminal (cmd)]:
 
 ```bash
 npm install
@@ -227,13 +227,13 @@ npm install
 Run the development server:
 
 ```bash
-npx expo start
+npx expo start --tunnel
 ```
 
 Clear the cache after changing environment variables:
 
 ```bash
-npx expo start -c
+npx expo start -c --tunnel
 ```
 
 ### Backend (Supabase)
@@ -252,4 +252,9 @@ Without `.env` credentials the app runs in local demo mode (AsyncStorage only).
 
 ## Long-Term Goal
 
-Build the operating system for science-based lifting and help everyday lifters train using the same principles employed by elite coaches, researchers, and evidence-based athletes.
+Build the path for science-based lifting and help everyday lifters train using the same principles employed by elite coaches, researchers, and evidence-based athletes.
+Features that might be added in the future:
+-AI assistant
+-AI physique rating
+-Physique ranking
+-AI form checker
