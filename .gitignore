@@ -19,4 +19,7 @@ dev.log
 # local env (never commit real secrets)
 .env
 .env*.local
-.env*.local 
+.env*.example
+
+# supabase
+supabase/schema.sql
