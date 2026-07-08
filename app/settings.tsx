@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import {
   Alert,
+  type AlertButton,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -23,7 +24,8 @@ import { colors } from "@/lib/colors";
 
 export default function SettingsScreen() {
   const { user, signOut, isConfigured } = useAuth();
-  const { profile, loading, updateUsername, updatePassword, updateAvatar } = useProfile();
+  const { profile, loading, updateUsername, updatePassword, updateAvatar, removeAvatar } =
+    useProfile();
   const { userElo } = useWorkout();
 
   const [username, setUsername] = useState("");
@@ -94,6 +96,37 @@ export default function SettingsScreen() {
     }
   };
 
+  const onRemoveAvatar = async () => {
+    setError(null);
+    setMessage(null);
+    setUploadingAvatar(true);
+    const result = await removeAvatar();
+    setUploadingAvatar(false);
+
+    if (result.error) {
+      setError(result.error);
+      return;
+    }
+    if (Platform.OS !== "web") {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
+    }
+    setMessage("Profile picture removed.");
+  };
+
+  const onPressAvatar = () => {
+    if (uploadingAvatar) return;
+
+    const buttons: AlertButton[] = [
+      { text: "Choose from library", onPress: onChangeAvatar },
+    ];
+    if (profile?.avatarUrl) {
+      buttons.push({ text: "Remove photo", style: "destructive", onPress: onRemoveAvatar });
+    }
+    buttons.push({ text: "Cancel", style: "cancel" });
+
+    Alert.alert("Profile picture", undefined, buttons);
+  };
+
   const confirmSignOut = () =>
     Alert.alert("Sign out", "Sign out of AxleLift?", [
       { text: "Cancel", style: "cancel" },
@@ -136,10 +169,10 @@ export default function SettingsScreen() {
                 uri={profile?.avatarUrl}
                 size={80}
                 editable
-                onPress={uploadingAvatar ? undefined : onChangeAvatar}
+                onPress={uploadingAvatar ? undefined : onPressAvatar}
               />
               <Text className="text-xs text-neutral-500">
-                {uploadingAvatar ? "Uploading…" : "Tap to change profile picture"}
+                {uploadingAvatar ? "Saving…" : "Tap to change or remove"}
               </Text>
             </View>
 

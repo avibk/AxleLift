@@ -1,9 +1,16 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as ImagePicker from "expo-image-picker";
+import { decode } from "base64-arraybuffer";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 
 const LOCAL_AVATAR_KEY = "axlelift_avatar_uri";
 const AVATAR_BUCKET = "avatars";
+
+export interface PickedImage {
+  uri: string;
+  base64: string | null;
+  mimeType: string | null;
+}
 
 function avatarPath(userId: string): string {
   return `${userId}/avatar.jpg`;
@@ -22,7 +29,15 @@ export const avatarService = {
     await AsyncStorage.setItem(LOCAL_AVATAR_KEY, uri);
   },
 
-  async pickFromGallery(): Promise<string | null> {
+  async clearLocalAvatarUri(): Promise<void> {
+    try {
+      await AsyncStorage.removeItem(LOCAL_AVATAR_KEY);
+    } catch {
+      // Non-fatal: the local cache may already be empty.
+    }
+  },
+
+  async pickImage(): Promise<PickedImage | null> {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!permission.granted) {
       throw new Error("Photo library permission is required to set your profile picture.");
@@ -33,27 +48,39 @@ export const avatarService = {
       allowsEditing: true,
       aspect: [1, 1],
       quality: 0.8,
+      base64: true,
     });
 
-    if (result.canceled || !result.assets[0]?.uri) return null;
-    return result.assets[0].uri;
+    const asset = result.assets?.[0];
+    if (result.canceled || !asset?.uri) return null;
+
+    return {
+      uri: asset.uri,
+      base64: asset.base64 ?? null,
+      mimeType: asset.mimeType ?? null,
+    };
   },
 
-  async uploadAvatar(userId: string, localUri: string): Promise<string> {
+  async uploadAvatar(userId: string, image: PickedImage): Promise<string> {
     if (!isSupabaseConfigured || !supabase) {
-      await this.saveLocalAvatarUri(localUri);
-      return localUri;
+      await this.saveLocalAvatarUri(image.uri);
+      return image.uri;
     }
 
-    const response = await fetch(localUri);
-    const blob = await response.blob();
-    const path = avatarPath(userId);
+    if (!image.base64) {
+      throw new Error("Could not read the selected image. Please try another photo.");
+    }
 
+    const path = avatarPath(userId);
+    const contentType = image.mimeType ?? "image/jpeg";
+
+    // React Native cannot reliably upload a Blob to Supabase Storage (it writes a
+    // 0-byte file), so decode the base64 payload to an ArrayBuffer and upload that.
     const { error: uploadError } = await supabase.storage
       .from(AVATAR_BUCKET)
-      .upload(path, blob, {
+      .upload(path, decode(image.base64), {
         upsert: true,
-        contentType: "image/jpeg",
+        contentType,
       });
 
     if (uploadError) throw uploadError;
@@ -72,15 +99,25 @@ export const avatarService = {
     return publicUrl;
   },
 
-  async pickAndUpload(userId: string | null): Promise<string | null> {
-    const localUri = await this.pickFromGallery();
-    if (!localUri) return null;
+  async removeAvatar(userId: string | null): Promise<void> {
+    await this.clearLocalAvatarUri();
 
-    if (!userId) {
-      await this.saveLocalAvatarUri(localUri);
-      return localUri;
+    if (!userId || !isSupabaseConfigured || !supabase) return;
+
+    const { error: removeError } = await supabase.storage
+      .from(AVATAR_BUCKET)
+      .remove([avatarPath(userId)]);
+
+    // A missing object is not a fatal error when removing.
+    if (removeError && !/not found/i.test(removeError.message)) {
+      throw removeError;
     }
 
-    return this.uploadAvatar(userId, localUri);
+    const { error: profileError } = await supabase
+      .from("profiles")
+      .update({ avatar_url: null })
+      .eq("id", userId);
+
+    if (profileError) throw profileError;
   },
 };

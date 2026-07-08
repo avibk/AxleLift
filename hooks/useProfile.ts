@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 import { useAuth } from "@/contexts/AuthContext";
-import { avatarService } from "@/services/avatarService";
+import { avatarService, type PickedImage } from "@/services/avatarService";
 
 export interface UserProfile {
   id: string;
@@ -107,28 +107,75 @@ export function useProfile() {
     return updateError?.message ?? null;
   };
 
-  const updateAvatar = async (): Promise<{ url: string | null; error: string | null }> => {
+  const buildFallbackProfile = (avatarUrl: string | null): UserProfile => ({
+    id: user?.id ?? "local",
+    username: user?.email?.split("@")[0] ?? "Guest",
+    lifetimeElo: 1000,
+    seasonalElo: 0,
+    rank: "Novice",
+    avatarUrl,
+  });
+
+  const updateAvatar = async (): Promise<{
+    url: string | null;
+    error: string | null;
+    canceled: boolean;
+  }> => {
+    let picked: PickedImage | null;
     try {
-      const url = await avatarService.pickAndUpload(user?.id ?? null);
-      if (!url) return { url: null, error: null };
+      picked = await avatarService.pickImage();
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "Failed to open the photo library.";
+      return { url: null, error: message, canceled: false };
+    }
+
+    if (!picked) return { url: null, error: null, canceled: true };
+    const image = picked;
+
+    const previousAvatar = profile?.avatarUrl ?? null;
+
+    // Optimistic: show the selected photo immediately while it uploads.
+    setProfile((prev) =>
+      prev ? { ...prev, avatarUrl: image.uri } : buildFallbackProfile(image.uri)
+    );
+
+    try {
+      let url = image.uri;
+      if (user?.id) {
+        url = await avatarService.uploadAvatar(user.id, image);
+      } else {
+        await avatarService.saveLocalAvatarUri(image.uri);
+      }
 
       setProfile((prev) =>
-        prev
-          ? { ...prev, avatarUrl: url }
-          : {
-              id: user?.id ?? "local",
-              username: user?.email?.split("@")[0] ?? "Guest",
-              lifetimeElo: 1000,
-              seasonalElo: 0,
-              rank: "Novice",
-              avatarUrl: url,
-            }
+        prev ? { ...prev, avatarUrl: url } : buildFallbackProfile(url)
       );
-
-      return { url, error: null };
+      return { url, error: null, canceled: false };
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Failed to update profile picture.";
-      return { url: null, error: message };
+      // Revert to the previous avatar if the upload fails.
+      setProfile((prev) => (prev ? { ...prev, avatarUrl: previousAvatar } : prev));
+      const message =
+        err instanceof Error ? err.message : "Failed to update profile picture.";
+      return { url: null, error: message, canceled: false };
+    }
+  };
+
+  const removeAvatar = async (): Promise<{ error: string | null }> => {
+    const previousAvatar = profile?.avatarUrl ?? null;
+    if (!previousAvatar) return { error: null };
+
+    // Optimistic clear.
+    setProfile((prev) => (prev ? { ...prev, avatarUrl: null } : prev));
+
+    try {
+      await avatarService.removeAvatar(user?.id ?? null);
+      return { error: null };
+    } catch (err) {
+      setProfile((prev) => (prev ? { ...prev, avatarUrl: previousAvatar } : prev));
+      const message =
+        err instanceof Error ? err.message : "Failed to remove profile picture.";
+      return { error: message };
     }
   };
 
@@ -140,5 +187,6 @@ export function useProfile() {
     updateUsername,
     updatePassword,
     updateAvatar,
+    removeAvatar,
   };
 }
