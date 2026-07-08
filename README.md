@@ -254,7 +254,7 @@ Without `.env` credentials the app runs in local demo mode (AsyncStorage only).
 
 Build the path for science-based lifting and help everyday lifters train using the same principles employed by elite coaches, researchers, and evidence-based athletes.
 Features that might be added in the future:
--AI assistant
--AI physique rating
--Physique ranking
--AI form checker
+* AI assistant
+* AI physique rating
+* Physique ranking
+* AI form checker
