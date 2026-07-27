@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Alert, Pressable, Text, TextInput, View } from "react-native";
+import { Alert, Platform, Pressable, Text, TextInput, View } from "react-native";
+import * as Haptics from "expo-haptics";
 import {
   Calendar,
   ChevronDown,
@@ -28,7 +29,7 @@ import { colors } from "@/lib/colors";
 const RIR_OPTIONS = [0, 1, 2, 3, 4, 5];
 
 export default function LoggerScreen() {
-  const { sessions, saveSession } = useWorkout();
+  const { sessions, saveSession, error: workoutError, reload } = useWorkout();
 
   const [sessionName, setSessionName] = useState("Evidence-Based Session");
   const [sessionNotes, setSessionNotes] = useState("");
@@ -146,11 +147,14 @@ export default function LoggerScreen() {
 
     await saveSession(newSession);
     resetLogger();
+    if (Platform.OS !== "web") {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium).catch(() => {});
+    }
     Alert.alert("Session saved", "Weekly muscle volume and ELO updated.");
   };
 
   return (
-    <Screen>
+    <Screen onRefresh={reload} keyboardAvoiding>
       {/* Header */}
       <View className="mb-5 flex-row items-center justify-between">
         <View className="flex-1 pr-3">
@@ -163,6 +167,12 @@ export default function LoggerScreen() {
           </Text>
         </View>
       </View>
+
+      {workoutError ? (
+        <Text className="mb-4 rounded-xl border border-red-500/20 bg-red-500/10 px-3 py-2 text-xs text-red-300">
+          {workoutError}
+        </Text>
+      ) : null}
 
       {/* Action row */}
       <View className="mb-4 flex-row gap-2">

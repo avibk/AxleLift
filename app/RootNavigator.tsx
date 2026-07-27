@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Platform } from "react-native";
 import { Stack, useRouter, useSegments } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { AuthProvider, useAuth, useIsAuthed } from "@/contexts/AuthContext";
@@ -60,7 +61,13 @@ function RootNavigator() {
     >
       <Stack.Screen name="(tabs)" />
       <Stack.Screen name="(auth)" />
-      <Stack.Screen name="settings" options={{ animation: "slide_from_right" }} />
+      <Stack.Screen
+        name="settings"
+        options={{
+          presentation: Platform.OS === "ios" ? "modal" : "card",
+          animation: Platform.OS === "ios" ? "default" : "slide_from_right",
+        }}
+      />
     </Stack>
   );
 }

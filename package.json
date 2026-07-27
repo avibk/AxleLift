@@ -8,12 +8,13 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "test": "vitest run"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "2.2.0",
     "@supabase/supabase-js": "^2.46.1",
-    "base64-arraybuffer": "^1.0.2",
+    "base64-arraybuffer": "1.0.2",
     "expo": "~54.0.35",
     "expo-constants": "~18.0.13",
     "expo-dev-client": "~6.0.21",
@@ -42,6 +43,7 @@
     "@expo/ngrok": "^4.1.0",
     "@types/react": "~19.1.10",
     "tailwindcss": "^3.4.17",
-    "typescript": "~5.9.2"
+    "typescript": "~5.9.2",
+    "vitest": "^3.0.0"
   }
 }

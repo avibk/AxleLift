@@ -53,8 +53,8 @@ function recentMonthLabels(): string[] {
 
 export default function HomeScreen() {
   const router = useRouter();
-  const { profile } = useProfile();
-  const { sessions, userElo, isReady } = useWorkout();
+  const { profile, reload: reloadProfile } = useProfile();
+  const { sessions, userElo, isReady, error: workoutError, reload: reloadWorkout } = useWorkout();
 
   if (!isReady) return <Loader />;
 
@@ -73,7 +73,7 @@ export default function HomeScreen() {
   const months = recentMonthLabels();
 
   return (
-    <Screen>
+    <Screen onRefresh={() => Promise.all([reloadProfile(), reloadWorkout()]).then(() => undefined)}>
       <View className="flex-row items-center justify-between pb-6 pt-2">
         <Text className="text-4xl font-bold tracking-tight text-white">Workouts</Text>
         <View className="flex-row items-center gap-3">
@@ -83,11 +83,18 @@ export default function HomeScreen() {
           </View>
           <UserAvatar
             uri={profile?.avatarUrl}
+            name={profile?.username}
             size={44}
             onPress={() => router.push("/settings")}
           />
         </View>
       </View>
+
+      {workoutError ? (
+        <Text className="mb-4 rounded-xl border border-red-500/20 bg-red-500/10 px-3 py-2 text-xs text-red-300">
+          {workoutError}
+        </Text>
+      ) : null}
 
       <View className="flex-row gap-3.5">
         <Pressable

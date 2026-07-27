@@ -1,19 +1,22 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import type { FeedCategory, ResearchArticle } from "@/src/types/research.types";
+import {
+  buildEuropePmcQuery,
+  buildPubMedQuery,
+  rankResearchArticles,
+  sanitizeResearchSearch,
+} from "@/src/utils/researchFeedRelevance";
 
 const EUROPE_PMC_BASE = "https://www.ebi.ac.uk/europepmc/webservices/rest";
 const NCBI_BASE = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils";
-const CACHE_PREFIX = "axlelift_feed_cache_";
+const CACHE_PREFIX = "axlelift_feed_cache_v3_";
 const CACHE_TTL_MS = 6 * 60 * 60 * 1000;
+const CANDIDATE_PAGE_SIZE = 50;
+const FEED_PAGE_SIZE = 20;
 
-const CATEGORY_QUERIES: Record<FeedCategory, string> = {
-  All: "(hypertrophy OR resistance training OR muscle strength) AND OPEN_ACCESS:Y",
-  Hypertrophy: "hypertrophy AND resistance training",
-  Biomechanics: "biomechanics AND (squat OR bench press OR deadlift OR resistance training)",
-  Recovery: "muscle recovery AND resistance training",
-  Nutrition: "protein AND muscle protein synthesis AND resistance training",
-  Myths: '"systematic review" AND (fitness OR exercise) AND (myth OR misconception)',
-};
+interface FetchArticlesOptions {
+  bypassCache?: boolean;
+}
 
 interface EuropePmcResult {
   id?: string;
@@ -77,13 +80,15 @@ async function writeCache(key: string, articles: ResearchArticle[]): Promise<voi
   }
 }
 
-async function searchEuropePmc(query: string, pageSize = 20): Promise<ResearchArticle[]> {
+async function searchEuropePmc(
+  query: string,
+  pageSize = CANDIDATE_PAGE_SIZE
+): Promise<ResearchArticle[]> {
   const params = new URLSearchParams({
     query,
     format: "json",
     pageSize: String(pageSize),
     resultType: "core",
-    sort: "CITED desc",
   });
 
   const res = await fetch(`${EUROPE_PMC_BASE}/search?${params.toString()}`);
@@ -98,7 +103,10 @@ async function searchEuropePmc(query: string, pageSize = 20): Promise<ResearchAr
     .filter((a): a is ResearchArticle => a !== null);
 }
 
-async function searchPubMedFallback(query: string, pageSize = 10): Promise<ResearchArticle[]> {
+async function searchPubMedFallback(
+  query: string,
+  pageSize = CANDIDATE_PAGE_SIZE
+): Promise<ResearchArticle[]> {
   const email = process.env.EXPO_PUBLIC_NCBI_EMAIL ?? "support@axlelift.app";
   const tool = "AxleLift";
 
@@ -107,6 +115,7 @@ async function searchPubMedFallback(query: string, pageSize = 10): Promise<Resea
     term: query,
     retmode: "json",
     retmax: String(pageSize),
+    sort: "relevance",
     tool,
     email,
   });
@@ -161,26 +170,30 @@ async function searchPubMedFallback(query: string, pageSize = 10): Promise<Resea
   return articles;
 }
 
-function buildQuery(category: FeedCategory, searchText?: string): string {
-  const base = CATEGORY_QUERIES[category];
-  const trimmed = searchText?.trim();
-  if (!trimmed) return base;
-  return `(${base}) AND (${trimmed})`;
+function buildCacheKey(category: FeedCategory, searchText?: string): string {
+  const normalizedSearch = sanitizeResearchSearch(searchText) || "default";
+  return `${CACHE_PREFIX}${encodeURIComponent(category)}_${encodeURIComponent(normalizedSearch)}`;
 }
 
 export const researchFeedService = {
   async fetchArticles(
     category: FeedCategory,
-    searchText?: string
+    searchText?: string,
+    options: FetchArticlesOptions = {}
   ): Promise<ResearchArticle[]> {
-    const query = buildQuery(category, searchText);
-    const cacheKey = `${CACHE_PREFIX}${category}_${query}`;
+    const cacheKey = buildCacheKey(category, searchText);
 
-    const cached = await readCache(cacheKey);
-    if (cached) return cached;
+    if (!options.bypassCache) {
+      const cached = await readCache(cacheKey);
+      if (cached) return cached;
+    }
 
     try {
-      const articles = await searchEuropePmc(query);
+      const query = buildEuropePmcQuery(category, searchText);
+      const candidates = await searchEuropePmc(query);
+      const articles = rankResearchArticles(candidates, category, searchText, {
+        limit: FEED_PAGE_SIZE,
+      });
       if (articles.length > 0) {
         await writeCache(cacheKey, articles);
         return articles;
@@ -190,11 +203,16 @@ export const researchFeedService = {
     }
 
     try {
-      const fallback = await searchPubMedFallback(query);
-      if (fallback.length > 0) {
-        await writeCache(cacheKey, fallback);
+      const query = buildPubMedQuery(category, searchText);
+      const candidates = await searchPubMedFallback(query);
+      const articles = rankResearchArticles(candidates, category, searchText, {
+        includeAbstract: false,
+        limit: FEED_PAGE_SIZE,
+      });
+      if (articles.length > 0) {
+        await writeCache(cacheKey, articles);
       }
-      return fallback;
+      return articles;
     } catch (err) {
       if (__DEV__) console.warn("[researchFeed] PubMed fallback failed:", err);
       throw err;

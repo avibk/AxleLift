@@ -6,7 +6,7 @@ import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 const LOCAL_AVATAR_KEY = "axlelift_avatar_uri";
 const AVATAR_BUCKET = "avatars";
 
-export interface PickedImage {
+interface PickedImage {
   uri: string;
   base64: string | null;
   mimeType: string | null;
@@ -27,14 +27,6 @@ export const avatarService = {
 
   async saveLocalAvatarUri(uri: string): Promise<void> {
     await AsyncStorage.setItem(LOCAL_AVATAR_KEY, uri);
-  },
-
-  async clearLocalAvatarUri(): Promise<void> {
-    try {
-      await AsyncStorage.removeItem(LOCAL_AVATAR_KEY);
-    } catch {
-      // Non-fatal: the local cache may already be empty.
-    }
   },
 
   async pickImage(): Promise<PickedImage | null> {
@@ -74,8 +66,6 @@ export const avatarService = {
     const path = avatarPath(userId);
     const contentType = image.mimeType ?? "image/jpeg";
 
-    // React Native cannot reliably upload a Blob to Supabase Storage (it writes a
-    // 0-byte file), so decode the base64 payload to an ArrayBuffer and upload that.
     const { error: uploadError } = await supabase.storage
       .from(AVATAR_BUCKET)
       .upload(path, decode(image.base64), {
@@ -99,25 +89,15 @@ export const avatarService = {
     return publicUrl;
   },
 
-  async removeAvatar(userId: string | null): Promise<void> {
-    await this.clearLocalAvatarUri();
+  async pickAndUpload(userId: string | null): Promise<string | null> {
+    const image = await this.pickImage();
+    if (!image) return null;
 
-    if (!userId || !isSupabaseConfigured || !supabase) return;
-
-    const { error: removeError } = await supabase.storage
-      .from(AVATAR_BUCKET)
-      .remove([avatarPath(userId)]);
-
-    // A missing object is not a fatal error when removing.
-    if (removeError && !/not found/i.test(removeError.message)) {
-      throw removeError;
+    if (!userId) {
+      await this.saveLocalAvatarUri(image.uri);
+      return image.uri;
     }
 
-    const { error: profileError } = await supabase
-      .from("profiles")
-      .update({ avatar_url: null })
-      .eq("id", userId);
-
-    if (profileError) throw profileError;
+    return this.uploadAvatar(userId, image);
   },
 };

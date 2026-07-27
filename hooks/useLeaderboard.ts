@@ -27,7 +27,6 @@ export function useLeaderboard(initialBoard: LeaderboardId = "lifetime") {
       setEntries(data);
     } catch {
       setError("Could not load leaderboard.");
-      setEntries([]);
     } finally {
       setLoading(false);
     }

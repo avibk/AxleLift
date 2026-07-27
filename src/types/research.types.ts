@@ -4,7 +4,9 @@ export type FeedCategory =
   | "Biomechanics"
   | "Recovery"
   | "Nutrition"
-  | "Myths";
+  | "Evidence Reviews";
+
+export type ResearchCategory = Exclude<FeedCategory, "All">;
 
 export interface ResearchArticle {
   id: string;
@@ -18,4 +20,6 @@ export interface ResearchArticle {
   pmid?: string;
   sourceUrl: string;
   source: "europepmc" | "pubmed";
+  /** Computed once when the feed response is normalized and cached. */
+  categories?: ResearchCategory[];
 }

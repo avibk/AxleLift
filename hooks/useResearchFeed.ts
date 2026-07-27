@@ -10,22 +10,34 @@ export function useResearchFeed(initialCategory: FeedCategory = "All") {
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const requestSequenceRef = useRef(0);
 
   const fetchArticles = useCallback(
-    async (opts?: { refresh?: boolean }) => {
+    async (
+      opts?: { refresh?: boolean },
+      requestId = ++requestSequenceRef.current
+    ) => {
+      if (requestId !== requestSequenceRef.current) return;
+
       const isRefresh = opts?.refresh ?? false;
       if (isRefresh) setRefreshing(true);
       else setLoading(true);
       setError(null);
 
       try {
-        const results = await researchFeedService.fetchArticles(category, searchQuery);
-        setArticles(results);
+        const results = await researchFeedService.fetchArticles(category, searchQuery, {
+          bypassCache: isRefresh,
+        });
+        if (requestId === requestSequenceRef.current) setArticles(results);
       } catch {
-        setError("Could not load research papers. Check your connection and try again.");
+        if (requestId === requestSequenceRef.current) {
+          setError("Could not load research papers. Check your connection and try again.");
+        }
       } finally {
-        setLoading(false);
-        setRefreshing(false);
+        if (requestId === requestSequenceRef.current) {
+          setLoading(false);
+          setRefreshing(false);
+        }
       }
     },
     [category, searchQuery]
@@ -33,12 +45,14 @@ export function useResearchFeed(initialCategory: FeedCategory = "All") {
 
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
+    const requestId = ++requestSequenceRef.current;
     debounceRef.current = setTimeout(() => {
-      fetchArticles();
+      fetchArticles(undefined, requestId);
     }, searchQuery ? 400 : 0);
 
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
+      requestSequenceRef.current += 1;
     };
   }, [fetchArticles, searchQuery]);
 

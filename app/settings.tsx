@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import {
   Alert,
-  type AlertButton,
   KeyboardAvoidingView,
   Platform,
   Pressable,
+  RefreshControl,
   ScrollView,
   Text,
   View,
@@ -24,9 +24,8 @@ import { colors } from "@/lib/colors";
 
 export default function SettingsScreen() {
   const { user, signOut, isConfigured } = useAuth();
-  const { profile, loading, updateUsername, updatePassword, updateAvatar, removeAvatar } =
-    useProfile();
-  const { userElo } = useWorkout();
+  const { profile, loading, error: profileError, reload: reloadProfile, updateUsername, updatePassword, updateAvatar } = useProfile();
+  const { userElo, reload: reloadWorkout } = useWorkout();
 
   const [username, setUsername] = useState("");
   const [usernameInitialized, setUsernameInitialized] = useState(false);
@@ -37,6 +36,7 @@ export default function SettingsScreen() {
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     if (profile && !usernameInitialized) {
@@ -96,35 +96,16 @@ export default function SettingsScreen() {
     }
   };
 
-  const onRemoveAvatar = async () => {
-    setError(null);
-    setMessage(null);
-    setUploadingAvatar(true);
-    const result = await removeAvatar();
-    setUploadingAvatar(false);
-
-    if (result.error) {
-      setError(result.error);
-      return;
+  const onRefresh = async () => {
+    setRefreshing(true);
+    try {
+      await Promise.all([reloadProfile(), reloadWorkout()]);
+      if (Platform.OS !== "web") {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+      }
+    } finally {
+      setRefreshing(false);
     }
-    if (Platform.OS !== "web") {
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
-    }
-    setMessage("Profile picture removed.");
-  };
-
-  const onPressAvatar = () => {
-    if (uploadingAvatar) return;
-
-    const buttons: AlertButton[] = [
-      { text: "Choose from library", onPress: onChangeAvatar },
-    ];
-    if (profile?.avatarUrl) {
-      buttons.push({ text: "Remove photo", style: "destructive", onPress: onRemoveAvatar });
-    }
-    buttons.push({ text: "Cancel", style: "cancel" });
-
-    Alert.alert("Profile picture", undefined, buttons);
   };
 
   const confirmSignOut = () =>
@@ -156,23 +137,32 @@ export default function SettingsScreen() {
           <Text className="text-xl font-bold text-white">Settings</Text>
         </View>
 
-        {loading && isConfigured ? (
+        {loading && isConfigured && !refreshing ? (
           <Loader />
         ) : (
           <ScrollView
             contentContainerClassName="gap-6 px-5 py-6"
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+                tintColor={colors.brand400}
+                colors={[colors.brand400]}
+              />
+            }
           >
             <View className="items-center gap-3 py-2">
               <UserAvatar
                 uri={profile?.avatarUrl}
+                name={profile?.username}
                 size={80}
                 editable
-                onPress={uploadingAvatar ? undefined : onPressAvatar}
+                onPress={uploadingAvatar ? undefined : onChangeAvatar}
               />
               <Text className="text-xs text-neutral-500">
-                {uploadingAvatar ? "Saving…" : "Tap to change or remove"}
+                {uploadingAvatar ? "Uploading…" : "Tap to change profile picture"}
               </Text>
             </View>
 
@@ -245,9 +235,9 @@ export default function SettingsScreen() {
               </View>
             ) : null}
 
-            {error ? (
+            {error || profileError ? (
               <View className="rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3">
-                <Text className="text-xs text-red-300">{error}</Text>
+                <Text className="text-xs text-red-300">{error ?? profileError}</Text>
               </View>
             ) : null}
 

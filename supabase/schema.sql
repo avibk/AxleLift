@@ -23,17 +23,22 @@ alter table public.profiles add column if not exists avatar_url text;
 
 alter table public.profiles enable row level security;
 
+-- A user may only read/write their OWN profile row.
+drop policy if exists "profiles_select_own" on public.profiles;
+create policy "profiles_select_own"
+  on public.profiles for select
+  using (auth.uid() = id);
 
 drop policy if exists "profiles_insert_own" on public.profiles;
 create policy "profiles_insert_own"
   on public.profiles for insert
-  with check ((select auth.uid()) = id);
+  with check (auth.uid() = id);
 
 drop policy if exists "profiles_update_own" on public.profiles;
 create policy "profiles_update_own"
   on public.profiles for update
-  using ((select auth.uid()) = id)
-  with check ((select auth.uid()) = id);
+  using (auth.uid() = id)
+  with check (auth.uid() = id);
 
 -- Authenticated users may read public leaderboard fields from all profiles.
 drop policy if exists "profiles_select_leaderboard" on public.profiles;
@@ -62,23 +67,23 @@ alter table public.workout_sessions enable row level security;
 drop policy if exists "sessions_select_own" on public.workout_sessions;
 create policy "sessions_select_own"
   on public.workout_sessions for select
-  using ((select auth.uid()) = user_id);
+  using (auth.uid() = user_id);
 
 drop policy if exists "sessions_insert_own" on public.workout_sessions;
 create policy "sessions_insert_own"
   on public.workout_sessions for insert
-  with check ((select auth.uid()) = user_id);
+  with check (auth.uid() = user_id);
 
 drop policy if exists "sessions_update_own" on public.workout_sessions;
 create policy "sessions_update_own"
   on public.workout_sessions for update
-  using ((select auth.uid()) = user_id)
-  with check ((select auth.uid()) = user_id);
+  using (auth.uid() = user_id)
+  with check (auth.uid() = user_id);
 
 drop policy if exists "sessions_delete_own" on public.workout_sessions;
 create policy "sessions_delete_own"
   on public.workout_sessions for delete
-  using ((select auth.uid()) = user_id);
+  using (auth.uid() = user_id);
 
 create index if not exists workout_sessions_user_perf_idx
   on public.workout_sessions (user_id, performed_at desc);
@@ -102,9 +107,6 @@ begin
   return new;
 end;
 $$;
-
--- Prevent direct RPC calls; the trigger still fires with owner privileges.
-revoke execute on function public.handle_new_user() from public, anon, authenticated;
 
 drop trigger if exists on_auth_user_created on auth.users;
 create trigger on_auth_user_created
@@ -138,7 +140,6 @@ on conflict (id) do update set public = true;
 drop policy if exists "avatars_public_read" on storage.objects;
 create policy "avatars_public_read"
   on storage.objects for select
-  to authenticated
   using (bucket_id = 'avatars');
 
 -- Authenticated users manage only their own folder: {userId}/avatar.jpg
@@ -148,7 +149,7 @@ create policy "avatars_insert_own"
   to authenticated
   with check (
     bucket_id = 'avatars'
-    and (storage.foldername(name))[1] = (select auth.uid())::text
+    and (storage.foldername(name))[1] = auth.uid()::text
   );
 
 drop policy if exists "avatars_update_own" on storage.objects;
@@ -157,11 +158,11 @@ create policy "avatars_update_own"
   to authenticated
   using (
     bucket_id = 'avatars'
-    and (storage.foldername(name))[1] = (select auth.uid())::text
+    and (storage.foldername(name))[1] = auth.uid()::text
   )
   with check (
     bucket_id = 'avatars'
-    and (storage.foldername(name))[1] = (select auth.uid())::text
+    and (storage.foldername(name))[1] = auth.uid()::text
   );
 
 drop policy if exists "avatars_delete_own" on storage.objects;
@@ -170,5 +171,5 @@ create policy "avatars_delete_own"
   to authenticated
   using (
     bucket_id = 'avatars'
-    and (storage.foldername(name))[1] = (select auth.uid())::text
+    and (storage.foldername(name))[1] = auth.uid()::text
   );

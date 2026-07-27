@@ -44,10 +44,10 @@ const SUBTITLES: Record<LeaderboardId, string> = {
 
 export default function LeaderboardsScreen() {
   const { user, isConfigured } = useAuth();
-  const { activeBoard, setActiveBoard, entries, loading, error } = useLeaderboard("lifetime");
+  const { activeBoard, setActiveBoard, entries, loading, error, reload } = useLeaderboard("lifetime");
 
   return (
-    <Screen>
+    <Screen onRefresh={reload}>
       <View className="rounded-2xl border border-neutral-800 bg-neutral-900 p-5">
         <View className="mb-2 flex-row items-center gap-2">
           <View className="rounded-md border border-brand-500/20 bg-brand-500/10 p-1">
@@ -158,7 +158,7 @@ export default function LeaderboardsScreen() {
                       <Text className="text-xs font-bold text-neutral-400">{idx + 1}</Text>
                     )}
                   </View>
-                  <UserAvatar uri={item.avatarUrl} size={32} />
+                  <UserAvatar uri={item.avatarUrl} name={item.username} size={32} />
                   <View className="flex-1">
                       <View className="flex-row items-center gap-2">
                         <Text className={`text-xs font-bold ${isSelf ? "text-brand-400" : "text-white"}`}>

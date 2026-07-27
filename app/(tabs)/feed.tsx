@@ -1,5 +1,6 @@
-import { Linking, Pressable, RefreshControl, ScrollView, Text, TextInput, View } from "react-native";
+import { Linking, Platform, Pressable, RefreshControl, ScrollView, Text, TextInput, View } from "react-native";
 import { BookOpen, ExternalLink, Quote, Search } from "lucide-react-native";
+import * as Haptics from "expo-haptics";
 import { Screen } from "@/components/ui/Screen";
 import { Loader } from "@/components/ui/Loader";
 import { useResearchFeed } from "@/hooks/useResearchFeed";
@@ -12,7 +13,7 @@ const CATEGORIES: FeedCategory[] = [
   "Biomechanics",
   "Recovery",
   "Nutrition",
-  "Myths",
+  "Evidence Reviews",
 ];
 
 function truncate(text: string, max: number): string {
@@ -33,19 +34,27 @@ export default function FeedScreen() {
     refresh,
   } = useResearchFeed();
 
+  const handleRefresh = async () => {
+    await refresh();
+    if (Platform.OS !== "web") {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+    }
+  };
+
   return (
     <Screen
+      keyboardAvoiding
       refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={refresh} tintColor={colors.brand400} />
+        <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} tintColor={colors.brand400} />
       }
     >
       <View className="mb-5">
         <View className="flex-row items-center gap-2">
           <BookOpen size={22} color={colors.brand400} />
-          <Text className="text-2xl font-bold tracking-tight text-white">Fitness Feed</Text>
+          <Text className="text-2xl font-bold tracking-tight text-white">Muscle Research Feed</Text>
         </View>
         <Text className="mt-1 text-xs text-neutral-400">
-          Peer-reviewed research from Europe PMC and PubMed.
+          Peer-reviewed lifting and muscle-building research.
         </Text>
       </View>
 
@@ -54,7 +63,7 @@ export default function FeedScreen() {
         <TextInput
           value={searchQuery}
           onChangeText={setSearchQuery}
-          placeholder="Search fitness literature..."
+          placeholder="Search muscle-building research..."
           placeholderTextColor={colors.textFaint}
           className="flex-1 py-3 text-xs text-white"
         />
@@ -109,10 +118,20 @@ export default function FeedScreen() {
               className="rounded-2xl border border-neutral-800 bg-neutral-900 p-5"
             >
               <View className="flex-row items-center justify-between gap-2">
-                <View className="rounded-full border border-neutral-800 bg-neutral-950 px-2.5 py-0.5">
-                  <Text className="text-[10px] font-semibold uppercase text-neutral-400">
-                    {article.source === "europepmc" ? "Europe PMC" : "PubMed"}
-                  </Text>
+                <View className="flex-1 flex-row flex-wrap gap-1.5">
+                  <View className="rounded-full border border-neutral-800 bg-neutral-950 px-2.5 py-0.5">
+                    <Text className="text-[10px] font-semibold uppercase text-neutral-400">
+                      {article.source === "europepmc" ? "Europe PMC" : "PubMed"}
+                    </Text>
+                  </View>
+                  {article.categories?.map((articleCategory) => (
+                    <View
+                      key={articleCategory}
+                      className="rounded-full border border-brand-500/30 bg-brand-500/10 px-2.5 py-0.5"
+                    >
+                      <Text className="text-[10px] font-semibold text-brand-300">{articleCategory}</Text>
+                    </View>
+                  ))}
                 </View>
                 {article.citationCount != null ? (
                   <Text className="text-[10px] text-neutral-500">

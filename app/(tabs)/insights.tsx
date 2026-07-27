@@ -41,7 +41,7 @@ const REC_STYLE: Record<string, { Icon: LucideIcon; color: string; wrap: string 
 };
 
 export default function InsightsScreen() {
-  const { sessions, userElo, isReady } = useWorkout();
+  const { sessions, userElo, isReady, error: workoutError, reload } = useWorkout();
 
   if (!isReady) return <Loader />;
 
@@ -101,13 +101,19 @@ export default function InsightsScreen() {
   ];
 
   return (
-    <Screen>
+    <Screen onRefresh={reload}>
       <View className="mb-5">
         <Text className="text-3xl font-bold tracking-tight text-white">Insights</Text>
         <Text className="mt-1 text-xs text-neutral-500">
           Computed from your logged training — no guesswork.
         </Text>
       </View>
+
+      {workoutError ? (
+        <Text className="mb-4 rounded-xl border border-red-500/20 bg-red-500/10 px-3 py-2 text-xs text-red-300">
+          {workoutError}
+        </Text>
+      ) : null}
 
       {/* Weekly snapshot */}
       <View className="flex-row flex-wrap justify-between">
