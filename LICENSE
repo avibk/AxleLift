@@ -1,21 +1,39 @@
-MIT License
+PROPRIETARY SOFTWARE LICENSE
 
-Copyright (c) 2026 Avi
+Copyright (c) 2026 AxleLift
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+All rights reserved.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+1. GRANT OF USE
+Permission is granted to download and use the compiled binary version of this 
+application ("the App") from the Apple App Store for personal, non-commercial 
+fitness tracking purposes only.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+2. SOURCE CODE RESTRICTION
+The source code of this App is proprietary and confidential. You may not:
+   - Reverse engineer, decompile, or disassemble the App;
+   - Copy, modify, or create derivative works of the source code;
+   - Redistribute, sublicense, or sell the source code or compiled binaries;
+   - Remove or obscure any proprietary notices contained within the App.
+
+YOU ASSUME FULL RESPONSIBILITY FOR YOUR PHYSICAL ACTIVITY. 
+Consult a physician before beginning any new exercise program. 
+The App may inaccurately track calories, heart rate, or distance. 
+The copyright holder is NOT liable for any injuries, health complications, 
+or damages resulting from the use or misuse of this App.
+
+3. DATA PRIVACY
+You are responsible for reviewing the App's Privacy Policy regarding the 
+collection, storage, and sharing of your health and fitness data.
+
+4. NO WARRANTY
+THE APP IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, 
+INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A 
+PARTICULAR PURPOSE, AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR 
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY, 
+WHETHER IN AN ACTION OF CONTRACT, TORT, OR OTHERWISE, ARISING FROM, OUT OF, 
+OR IN CONNECTION WITH THE APP.
+
+5. TRADEMARKS
+This license does not grant you any rights to use the app's name, logo, 
+or branding.
