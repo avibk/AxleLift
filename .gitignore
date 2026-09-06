@@ -1,0 +1,58 @@
+# dependencies
+node_modules/
+package-lock.json
+npm-debug.*
+
+# expo
+.expo/
+dist/
+web-build/
+expo-env.d.ts
+
+# native build directories
+/ios
+/android
+
+# misc
+*.log
+logs/
+log/
+expo-error.log
+expo.log
+npm-debug.log*
+dev.log
+.DS_Store
+.Trashes
+ehthumbs.db
+*.tmp
+*.temp
+
+# local env (never commit real secrets)
+.env
+.env.local
+.env.development
+.env.development.local
+.env.test
+.env.test.local
+.env.production
+.env.production.local
+.env.staging
+.env.staging.local
+.env*.local
+*.env
+*.env.*
+
+# Cache directories
+.cache/
+.cache-metro/
+.eslintcache
+.parcel-cache/
+.tsbuildinfo
+*.tsbuildinfo
+.turbo/
+.pnpm-store/
+.temp/
+.tmp/
+tmp/
+temp/
+

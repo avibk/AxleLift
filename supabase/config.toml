@@ -1,0 +1,7 @@
+# AxleLift local Supabase config (email templates).
+# For the hosted project, templates are synced via Supabase dashboard / Management API.
+# Docs: https://supabase.com/docs/guides/auth/auth-email-templates
+
+[auth.email.template.confirmation]
+subject = "Confirm your AxleLift account"
+content_path = "./supabase/templates/confirmation.html"
