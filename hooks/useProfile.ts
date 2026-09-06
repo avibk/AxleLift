@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 import { useAuth } from "@/contexts/AuthContext";
 import { avatarService } from "@/services/avatarService";
@@ -17,10 +17,20 @@ export function useProfile() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Monotonic sequence so only the latest load() invocation may commit state.
+  // Prevents a stale in-flight request (e.g. from before sign-out / account
+  // switch / session restore) from overwriting newer state.
+  const loadSeq = useRef(0);
 
   const load = useCallback(async () => {
+    const seq = ++loadSeq.current;
+    const isLatest = () => seq === loadSeq.current;
+
     if (!user?.id) {
       const localAvatar = await avatarService.getLocalAvatarUri();
+      if (!isLatest()) return;
+      setLoading(false);
+      setError(null);
       if (localAvatar) {
         setProfile({
           id: "local",
@@ -38,6 +48,9 @@ export function useProfile() {
 
     if (!isSupabaseConfigured || !supabase) {
       const localAvatar = await avatarService.getLocalAvatarUri();
+      if (!isLatest()) return;
+      setLoading(false);
+      setError(null);
       setProfile({
         id: user.id,
         username: user.email?.split("@")[0] ?? "Lifter",
@@ -58,6 +71,7 @@ export function useProfile() {
       .eq("id", user.id)
       .maybeSingle();
 
+    if (!isLatest()) return;
     setLoading(false);
 
     if (fetchError) {
@@ -65,17 +79,20 @@ export function useProfile() {
       return;
     }
 
-    if (data) {
-      const localAvatar = await avatarService.getLocalAvatarUri();
-      setProfile({
-        id: data.id,
-        username: data.username ?? user.email?.split("@")[0] ?? "Lifter",
-        lifetimeElo: data.lifetime_elo,
-        seasonalElo: data.seasonal_elo,
-        rank: data.rank,
-        avatarUrl: data.avatar_url ?? localAvatar,
-      });
-    }
+    const localAvatar = await avatarService.getLocalAvatarUri();
+    if (!isLatest()) return;
+
+    // `data` is null when the profile row is missing (e.g. trigger failure or
+    // account created before the trigger existed) -- fall back to a derived
+    // profile instead of leaving stale/null state behind.
+    setProfile({
+      id: user.id,
+      username: data?.username ?? user.email?.split("@")[0] ?? "Lifter",
+      lifetimeElo: data?.lifetime_elo ?? 1000,
+      seasonalElo: data?.seasonal_elo ?? 0,
+      rank: data?.rank ?? "Novice",
+      avatarUrl: data?.avatar_url ?? localAvatar,
+    });
   }, [user?.id, user?.email]);
 
   useEffect(() => {
@@ -88,10 +105,11 @@ export function useProfile() {
     const trimmed = username.trim();
     if (trimmed.length < 2) return "Username must be at least 2 characters.";
 
+    // Upsert (not update) so the write persists even when the profile row is
+    // missing; a bare update would silently match 0 rows and report success.
     const { error: updateError } = await supabase
       .from("profiles")
-      .update({ username: trimmed })
-      .eq("id", user.id);
+      .upsert({ id: user.id, username: trimmed });
 
     if (updateError) return updateError.message;
 
